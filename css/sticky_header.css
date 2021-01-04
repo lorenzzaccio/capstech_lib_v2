@@ -1,0 +1,56 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 3 nov. 2017, 12:16:36
+    Author     : capstech
+*/
+
+header {
+  height: 0px;
+  z-index:10;
+  width: 100%;
+}
+
+.header-banner {
+  background-color: #333;
+  background-image: url('https://37.media.tumblr.com/8b4969985e84b2aa1ac8d3449475f1af/tumblr_n3iftvUesn1snvqtdo1_1280.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}
+
+
+.fixed-header-open {
+  position: fixed;
+  top:0; left:200px;
+  width: 100%; 
+}
+
+nav {
+  background: #FF5722;
+  z-index:10;
+  color: #fff;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0 auto;
+  padding-left:0;
+  text-align:right;
+  max-width: 100%;
+}
+nav ul li { 
+  display: inline-block; 
+  line-height: 60px;
+  margin-left: 10px;
+}
+nav ul li a {
+  text-decoration: none; 
+  color: #a9abae;
+}
+
+

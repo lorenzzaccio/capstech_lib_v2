@@ -1,0 +1,139 @@
+#download_progress{
+	background-color:green;
+	color:white;
+	border : solid 1px red;
+}
+
+.sidenav_style {
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+    /* top: 0; */
+    /* left: 0; */
+    background-color: #ff5722de;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+
+.sidenav_style a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 13px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav_style a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.fullContainer_style {
+    transition: margin-left .5s;
+    padding: 16px;
+    width: -webkit-fill-available;
+}
+
+
+@media screen and (max-height: 450px) {
+  .sidenav_style {padding-top: 15px;}
+  .sidenav_style a {font-size: 14px;font-weight: 700;text-align: left;font-family: 'Roboto', sans-serif;}
+}
+
+.text-italic {
+  font-style: italic !important;
+}
+h1 {
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+.mapping_menu{
+	background: #ff5722;
+	color: #ffffff;
+	border-bottom: 1px solid #777777;
+	/* padding-left: 15px; */
+}
+
+.mapping_content{
+		list-style:none;
+		padding:0;
+		margin-top:8px;
+}
+.mapping_menu a{
+  color: #FFFFFF;
+  display: block;
+  padding: 9px;
+}
+.mapping_menu span {
+  margin-right: 8px;
+}
+
+ul.nav-link-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+ul.nav-link-list li {
+  background: #ff5722;
+  color: #ffffff;
+  border-bottom: 1px solid #777777;
+  font-size: 0.8em;
+}
+ul.nav-link-list li label {
+  background: #999999;
+  font-size: 12px;
+  font-weight: normal;
+  letter-spacing: 1px;
+  margin-bottom: 0px;
+  padding: 5px;
+  text-align: center;
+  width: 100%;
+}
+ul.nav-link-list li a {
+  color: #FFFFFF;
+  display: block;
+  padding: 9px;
+}
+ul.nav-link-list li a span {
+  margin-right: 8px;
+  font-size: 0.9em;
+}
+
+
+.title_header{
+  font-family:roboto;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.map_lbl{
+	font-size:10px;
+	display: inline-flex;
+	/* margin-left:-50px; */
+}
+.map_lbl input {
+	margin-left:0px;
+}
+
+.map_lbl p {
+	/* margin-left: -60px; */
+	font-size: 1em;
+	font-weight: 700;
+	font-family: roboto;
+	color: azure;
+}
+#parameter{
+	margin-top:5px;
+	margin-bottom:5px;
+	margin-left:5px;
+}

@@ -1,0 +1,215 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 13 janv. 2017, 18:18:16
+    Author     : lorenzzaccio
+*/
+
+html{
+  overflow:hidden;
+}
+
+body {
+    font-size: 10px;
+    font-family: 'Open Sans', sans-serif;
+    color: #353535;
+}
+
+.full-circle {
+ background-color: rgba(204, 0, 102, 0);
+ border: 4px solid #333;
+ text-align: center;
+ font-weight: 600;
+ -moz-border-radius:75px;
+ -webkit-border-radius: 75px;
+ padding:0px 5px 0px 5px;
+}
+
+.full-rect {
+ background-color: rgba(204, 0, 102, 0);
+ border: 4px solid #333;
+ text-align: center;
+ -moz-border-radius:5px;
+ -webkit-border-radius: 5px;
+}
+
+.detail_modal{
+  width:-webkit-fill-available;
+}
+.detail_modal .table-container{
+  /* width:500px */
+}
+
+.table-container{
+  height: 744px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  display: inline-block;
+  width: -webkit-fill-available;
+}
+
+.fixed-header{
+    display: flex;
+}
+
+.menu_bar{
+    display: inline;
+}
+
+.filter_bar{
+    display: inline;
+}
+
+.container_slider{
+    display: inline;
+}
+
+@page{
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+  .active {
+    display:inline-table;
+     background-color:orangered;
+      max-height: 100px;
+}
+
+.btn-filter{
+    font-size: 12px;
+}
+
+.btn-subrow{
+    display:inline-block;
+    padding-right: 10px;
+    margin-left: 10px;
+    vertical-align: top;
+}
+
+label {
+    /* float:left; */
+    /* padding-top: 0px; */
+    /* text-align: right; */
+    /* width: 250px; */
+    padding-right:10px;
+    font-family: roboto;
+    font-size: 12px;
+}
+
+.autocomplete-items{
+    background-color: aquamarine;
+    z-index: 10;
+    font-size:0.8em;
+    /*display: inline-block;*/
+    position:absolute;
+}
+.autocomplete-item:hover {
+  background-color: gold;
+}
+
+autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+}
+
+.btn_sidebar{
+    float:left;
+    padding-top:5px;
+    font-size:40px;
+}
+
+.btn_add{
+    float:left;
+    font-size:40px;
+    color:white;
+    padding-top:5px;
+}
+
+.overlay_img{
+    width:50px;
+}
+
+.overlay_comment{
+    text-align:center;
+}
+
+.loader {
+    display: inline-block;
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 40px;
+  height: 40px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.msg_loader{
+    /* margin-top: -2%; */
+    color: white;
+    font-weight: 700;
+    font-size: 0.8em;
+    background-color: inherit;
+}
+
+.loader_div{
+    text-align: center;
+    height: 50px;
+}
+
+.btn_bar{
+  display: inline;
+}
+.btn-subrow{
+	background-color: #267429;
+	font-size: 10px;
+}
+
+table {
+  width: 100%;
+} 
+table  
+  td {
+    padding:0px;!important
+    height:50px;
+    background-color:#CDDC39;
+
+    }
+.rowProd td{
+  padding: 0;
+}
+.rowProd input{
+  font-size:10px;
+  /* width:fit-content; */
+}
+
+ table tr{
+   
+ }
+ .inner{
+  display: inline;
+  padding: 2px;
+ }
+ .outer{
+  width:100%;
+  /* text-align: center; */
+ }
+  
+  }
