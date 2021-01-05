@@ -110,6 +110,8 @@ class _list_of_class {
         var id = classname.split("_")[0];
         //update ui slider
         var year = this._config._date_filter.split("-")[0];
+        let fin = this._config._dateFin.split("-")[0];
+        $('#'+html_framework.slider)[0].max=fin;
         $('#'+html_framework.slider_lbl).text(year);
         $('#'+html_framework.slider).val(year);
     }

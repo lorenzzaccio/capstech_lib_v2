@@ -255,20 +255,24 @@
     }
 ///////////////////FACTURE//////////////////////////////////////
     const g_port=3023;
+    const node_server = "192.168.0.146";
     function service_create_facture(liste_com_id,facture_num){
         
-        return promise_db_task(_HTTP+ g_ipServer.split(":")[0] +":"+g_port+ "/facture/"+facture_num+"/"+liste_com_id,null,"POST");
+        return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/factures/"+facture_num+"/"+liste_com_id,null,"POST");
     }
     
     function service_update_facture(facture_num){
-        return promise_db_task(_HTTP+ g_ipServer.split(":")[0] +":"+g_port+ "/facture/"+facture_num,null,"PUT");
+        return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/factures/"+facture_num,null,"PUT");
     }
 
     function service_get_last_facture_num(){
-        node_server = "192.168.0.2";
         //return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/facture/getJsonLastFactureNum.php");
-        return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/new_facture",null,"GET");
+        return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/factures/last",null,"GET");
     }
+
+    function getFullFactureClientTask(dateDeb, dateFin,status) {
+        return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/facture/getJsonFactureClientBetweenDate.php"+ "?" +"dateDeb=" + dateDeb + "&dateFin=" + dateFin+ "&status=" + status);
+    };
 ///////////////////////////////////////////////////
     function sql_update_async(table,name,val,condition)  {
         return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/setJsonUpdate.php"+ "?" + "table=" + table + "&name=" + name+ "&val=" + val+ "&condition=" + condition);
@@ -285,9 +289,6 @@
         return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/avoir/getJsonAvoirClientBetweenDate.php"+ "?" + "dateDeb=" + dateDeb + "&dateFin=" + dateFin+ "&status=" + status);
     };
     
-    function getFullFactureClientTask(dateDeb, dateFin,status) {
-        return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/facture/getJsonFactureClientBetweenDate.php"+ "?" +"dateDeb=" + dateDeb + "&dateFin=" + dateFin+ "&status=" + status);
-    };
     function getFullArticleTask(status) {
         return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/getJsonListArticleForStatus.php"+ "?" + "status=" + status);
     };
