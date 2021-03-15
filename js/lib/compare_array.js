@@ -24,6 +24,7 @@ function is_id_in_array(a,b){
 			}else
 				b_found=false; 
 		}
+		if(b===undefined) b_found=false;
 		if(!b_found) not_found_arr.push(a[i]);
 	}
 	return not_found_arr;

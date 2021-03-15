@@ -2,7 +2,7 @@ var _arr_obj={};
 
 class _table_row {
 
-	constructor(row_mapper,row_id, data,config,sub_row_class,columns,status_class) {
+	constructor(row_mapper,row_id, data,config,sub_row_class,columns,status_class,parent) {
 		this._row_mapper = row_mapper;
 		this._row_id = row_id;
 		this._config = config;
@@ -17,6 +17,7 @@ class _table_row {
 		this._status_str = this.COL_STATUS[STR];
 		this._star_id = 0;
 		this.data=data;
+		this._parent=parent;
 	};
 
 	get_data(){
@@ -38,7 +39,7 @@ class _table_row {
 		if(this._sub_row) 
 	        this._sub_row.display_sub_row();    
 	    else
-	        this._sub_row = new this._sub_row_class(this,this._config,this._status);
+	        this._sub_row = new this._sub_row_class(this,this._config,this._status,this._parent);
 	}
 
 	add_click(){

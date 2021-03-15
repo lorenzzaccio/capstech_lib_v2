@@ -5,7 +5,7 @@ class detail_wnd{
 		this._status = this._parent._status;
 		this._row_id=parent._row_id;
 		this._list_lbl = this._parent._sub_row._list_lbl;
-        this._confirm_cbk = sql_update;
+        this._confirm_cbk = sql_update_node;
 	}
 	update(arg){
 		//sql_update(arg);
@@ -16,15 +16,15 @@ class detail_wnd{
         if ((typeof confirm_cbk)==="function")
             this._confirm_cbk=confirm_cbk;
     }
-	createWndDetail(offre_id, title) {
+	async createWndDetail(offre_id, title) {
     	var title = title + " N°"+ offre_id;
     	var table_id = (this._row_id).split("_")[0]+ "_detail_tbody";
     	var modal_id = (this._row_id).split("_")[0]+"_detail_modal"
     	$('#'+modal_id).remove();
-    	this.generate_detail(offre_id,modal_id,title,table_id);
+    	await this.generate_detail(offre_id,modal_id,title,table_id);
 	};
 
-	generate_detail(offre_id,modal_id,title,table_id,service_cbk){
+	async generate_detail(offre_id,modal_id,title,table_id,service_cbk){
         var arrow = this._parent.get_data();
         var list_lbl = this._list_lbl;
         var _self = this;
@@ -55,7 +55,7 @@ class detail_wnd{
             if((list_lbl[k] !== null) && (list_lbl[k].length!==0)){
             	var cond_id = list_lbl[k][COL_COND1][STR];
             	var colName = list_lbl[k][COL_NAME][STR];
-                var cond=((list_lbl[k][COL_COND1])[STR])+"='"+arrow.get(cond_id)+"'";
+                var cond=arrow.get(cond_id);//((list_lbl[k][COL_COND1])[STR])+"='"+arrow.get(cond_id)+"'";
                 
                 var col_id = list_lbl[k][COL_NAME][INT];
                 var ui_type = list_lbl[k][COL_UI_TYPE];
@@ -126,17 +126,8 @@ confirm_click_cb(e,com_id){
             var v5=parseInt($(arr[l]).parents().attr("data-ref"));
             var vconsole="sql_update("+v1+","+v2+","+v3+","+v4+")";
             console.log(vconsole);
-            //sql_update(v1,v2,v3,v4);
             this._confirm_cbk(v1,v2,v3,v4);
-            /*for(var i=0;i<this._list_lbl.length;i++){
-                var arrow = this._list_lbl[i][1]; 
-                var lbl = v4.split("=")[0];
-                var val = v4.split("=")[1];
-                if(lbl===arrow[STR]){
-                    var id=arrow[INT];
-                    break;
-                }
-            }*/
+
         }
     }
     
@@ -147,7 +138,7 @@ confirm_click_cb(e,com_id){
             var v1=$(arr[l]).attr("data-table");
             var v2=$(arr[l]).attr("data-name");
 console.log($(arr[l]).val().trim());
-            var v3="'"+this.mysql_real_escape_string($(arr[l]).val().trim())+"'";// escape("\'"+$(arr[l]).val().trim()+"\'");
+            var v3=/*"'"+this.mysql_real_escape_string(*/encodeURIComponent($(arr[l]).val().trim());/*+"'"*/;// escape("\'"+$(arr[l]).val().trim()+"\'");
 			console.log(v3);
             var v4=$(arr[l]).attr("data-cond");
             var v5=parseInt($(arr[l]).attr("data-ref"));//column

@@ -36,10 +36,10 @@ get_fournisseur_combo(){
 }
 
 display_sub_row(){
-        if(this._visible)
-            this.hide();
-        else
-            this.show();
+    if(this._visible)
+        this.hide();
+    else
+        this.show();
 }
 
 show(){
@@ -78,6 +78,16 @@ addSubMenuRow(arg) {
     }
      $("#"+this._current_row_id).after(row);
     return row;
+};
+
+async populate_sub_row_menu(){
+    let obj = $("#"+this._parent._row_id);
+    //let status = obj.closest('tr').find(this.COL_STATUS[STR]).text().trim();
+    //let i_status = this._status.revertStatus(status);
+    
+    let com_id = obj.closest('tr').find('div.full-circle').text().trim();
+    let arr_dyn_menu= ["detail", this.detail_loc_cbk.bind(this),["","standard",com_id]];
+    this.addSubMenuRow(arr_dyn_menu);
 };
 
 

@@ -11,48 +11,36 @@ class _list_of_class {
         this._status=status;
         //init year sync
         this._year_sync=[];
-        this._loc = new Buffer(new Array());
-		this._liste_class = new _list_of_nn_tp(this._table_body_id,this._lll_row,this._config,this._sub_row_class,this._columns,this._status,table_row_class,this._loc);
+        this._loc = new Buffer(new Array(),this._columns);
+		this._liste_class = new _list_of_nn_tp(this._table_body_id,this._lll_row,this._config,this._sub_row_class,this._columns,this._status,table_row_class,this._loc,this);
         
         this._table_row_class = table_row_class;//_table_row;
 		this.init();
-	}
-
-    init_worker(){
-        this._myWorker = new Worker('../../new_'+this._filter._id+'/public_html/js/'+this._filter._id+'_update_worker.js');
-        this.test_worker = this._myWorker; 
-        const f = this.handle_worker_response.bind(this);
-        this._myWorker.onmessage= f; 
-    } 
+    }
     
-
     init_table(){
-        //this._resBuffer = [];
-        //this._loc = new Buffer(new Array());
-        
         this.empty_table();
-        //this._liste_class.create_row_mapping();
     }
 
 	init(){
 		this.init_ui();
         this.init_fetch_data();
 		this.init_table();
-		this.sync_db();
+        this.sync_db();
 	}
 	
 	init_ui(){
 		this._currentDate = today();
-        //init_ip();
     	this.init_dates();
 		this.init_status_combo();
         this.init_slider();
     	this.init_refresh();
         this.init_filter();
         this.init_sidebar();
-        this.init_parameter_btn();
+        this.init_parameter_btn(this._config);
         register_sidenav_btn(this._config);
         this.create_row_mapping();
+        //this.init_poll_db_worker();
 	}
 
     init_filter(){
@@ -82,9 +70,9 @@ class _list_of_class {
     	}
     }
 
-    init_parameter_btn(){
+    init_parameter_btn(config){
         $("body").off('click touchstart','#parameter');
-        $('#parameter').on('click touchstart',this.params.displayParameter.bind(this.params));
+        $('#'+config._id+'parameter').on('click touchstart',this.params.displayParameter.bind(this.params));
     }
 
 	init_timers(){
@@ -98,8 +86,7 @@ class _list_of_class {
 	}
 
 	init_status_combo(){
-        var html_framework =this._config.get_html_framework();
-  		//this._combo_status = $('#'+this._table_body_id).closest(full_container).find('select');  
+        var html_framework =this._config.get_html_framework(); 
 		$('#'+html_framework.status_combo).val(this._config._combo_status);
 	}
 
@@ -115,10 +102,10 @@ class _list_of_class {
         $('#'+html_framework.slider_lbl).text(year);
         $('#'+html_framework.slider).val(year);
     }
-
+/*
 	init_pagination(){
     	this._pagi = new Pagination(PAGINATION_BLOCK_ID);
-	}
+	}*/
 
 	sync_db(){
         var html_framework = '.'+this._config.get_html_framework();
@@ -143,14 +130,12 @@ class _list_of_class {
         Loader.log("envoi de la requête");
         let fetch = await this.fetch_full_data();
         Loader.log("données reçues");
-        //var length = await this._filter.cbk_search();
         Loader.hide()
     }
 	
     sync_db_cbk(buffer){
     	this._token=true;
-    	//this._loc=new Buffer(buffer);
-    	this._liste_class.populateTable(new Buffer(buffer),this._table_body_id);
+    	this._liste_class.populateTable(new Buffer(buffer,this._columns),this._table_body_id);
     	console.log("Populate "+this._table_body_id);
     	this._liste_class.loc=this._loc;
 	};
@@ -175,23 +160,22 @@ class _list_of_class {
         this.worker_send_msg(arg);
     }
 
-    init_worker(){
-        this._myWorker = new Worker('../../capstech_lib_v2/js/class/update_worker.js');
-        test_worker = this._myWorker; 
-        const f = this.handle_worker_response.bind(this);
-        this._myWorker.onmessage= f; 
+
+    init_update_worker(){
+        this._update_worker = new Worker('../../new_'+this._filter._id+'/public_html/js/'+this._filter._id+'_update_worker.js');
+        const f = this.handle_update_worker_response.bind(this);
+        this._update_worker.onmessage= f; 
     }
 
-    handle_worker_response(e){
+    handle_update_worker_response(e){
         var arg = e.data;
         if(arg[0]==="db_sync"){
             if(arg[1] && arg[2]){
-                db_write(this._config._id+"_buffer_"+arg[1],new Buffer(arg[2]).toString() );
+                db_write(this._config._id+"_buffer_"+arg[1],new Buffer(arg[2],this._columns).toString() );
                 console.log(" syncing received "+arg[1]);
                 var year = $('#'+this._filter._config._html_framework.slider).val();
                 if(parseInt(year)===arg[1])
                     this._filter.cbk_search();
-                 
             }
         }    
         if(arg[0]==="db_update"){
@@ -203,7 +187,7 @@ class _list_of_class {
                     const id =modified_result[row][0];
                     if(this._filter._buf){
                     	const row_id = this._filter._buf.findIndex((row)=>row[0]===id);
-                    	this._liste_class.update(this._config._id+"_mainRow"+row_id/*modified_result[row][2]*/,modified_result[row][1]);    
+                    	this._liste_class.update(this._config._id+"_mainRow"+row_id,modified_result[row][1]);    
                     }
                     const index = this.filtreTexte(this._loc,modified_result[row][0]);
                     if(index !==-1){
@@ -233,10 +217,7 @@ class _list_of_class {
                 const year = arg[2];
                 for(let row in modified_result){
                     Loader.log("some rows to add"+modified_result[row][0]);
-                    //insert_row_to_DOM(modified_result[row]);
                     this._loc.buffer.push(modified_result[row].split(";"));
-                    //insert_row_to_loc(modified_result[row]);
-                    //this._filter.add_row(modified_result[row]);
                 }
                 //refresh filter
                 this._filter.refresh();
@@ -252,11 +233,7 @@ class _list_of_class {
                 for(let row in modified_result){
                     Loader.log("some rows to add"+modified_result[row][0]);
                     const row_id = modified_result[row].split(";")[0];
-                    //delete_row_to_DOM(modified_result[row]);
-                     //const ret_index=this._loc.buffer.filter((row)=>{parseInt(row[0])===parseInt(row_id)||row[0]===row_id});
                      this._loc.buffer.map((row,index)=>{ if(parseInt(row[0])===parseInt(row_id)) this._loc.buffer.splice(index)});
-                     
-                     //if(index>=0)this._loc.buffer.splice(index);
                 }
                 //refresh filter
                 this._filter.refresh();
@@ -269,51 +246,59 @@ class _list_of_class {
             (el) => (el.indexOf(requete)!==-1)      
         )
     };
-
-    init_worker(){
-        this._myWorker = new Worker('../../new_'+this._filter._id+'/public_html/js/'+this._filter._id+'_update_worker.js');
-        this.test_worker = this._myWorker; 
-        const f = this.handle_worker_response.bind(this);
-        this._myWorker.onmessage= f; 
+    init_poll_db_worker(){
+        this._poll_db_worker = new Worker('../../capstech_lib_v2/js/class/poll_db_worker.js');
+        const f = this.handle_poll_db_worker_response.bind(this);
+        this._poll_db_worker.onmessage= f; 
+        const log_date = localStorage.getItem("db_log")||today();
+        this._poll_db_worker.postMessage(["start",log_date]);
+    } 
+    handle_poll_db_worker_response(e){
+        var arg = e.data;
+        if(arg[0]==="db_sync"){};
+        if(arg[0]==="db_update"){};
+        if(arg[0]==="db_add_row"){};
+        if(arg[0]==="db_suppress_row"){};
     }
 
-
     async fetch_full_data(){
-        
         const date_deb = new Date(this._config.get_date_deb());
         const date_fin = new Date(this._config.get_date_fin());
-        this.init_worker();
+        this.init_update_worker();
         const start_year = parseInt(extract_year(this._config.get_date_deb()));
         const end_year = parseInt(extract_year(this._config.get_date_fin()));
         let lcl_date_deb = this._config.get_date_deb();
         let lcl_date_fin=(+new Date(getEndYear(lcl_date_deb))<+date_fin)?getEndYear_str(lcl_date_deb):this._config.get_date_fin();
+        const status = this._config.get_status()||this._status.DEFAULT;
         for(let year=start_year;year<=end_year;year++){
-            this._loc=db_read(this._config._id+"_buffer_"+year)?new Buffer( db_read(this._config._id+"_buffer_"+year).split("||")): null ;
+            this._loc=db_read(this._config._id+"_buffer_"+year)?new Buffer( db_read(this._config._id+"_buffer_"+year).split("||"),this._columns): null ;
             
             if(this._loc){
                 //launch synchronisation
                 if(year===parseInt(document.getElementById(this._filter._config._html_framework.slider).value)){
-                    this.test_worker.postMessage(["start",this._config.get_status()||this._status.DEFAULT,this._loc.buffer,year]);
-                    this.test_worker.postMessage(["check_added",this._config.get_status(),this._loc.buffer,year])
-                    this.test_worker.postMessage(["check_suppress",this._config.get_status(),this._loc.buffer,year])
+                    this._update_worker.postMessage(["start",status,this._loc.buffer,year]);
+                    this._update_worker.postMessage(["check_added",status,this._loc.buffer,year])
+                    this._update_worker.postMessage(["check_suppress",status,this._loc.buffer,year])
                 }
                 if(year===parseInt(document.getElementById(this._filter._config._html_framework.slider).value))
                     this._filter.cbk_search();
             }
             if(!this._loc){
-                this._myWorker.postMessage(["sync",lcl_date_deb,lcl_date_fin,this._config.get_status()||this._status.DEFAULT]);
+                this._update_worker.postMessage(["sync",lcl_date_deb,lcl_date_fin,status]);
             }
             lcl_date_deb=addDay_str(lcl_date_fin,1);
             if(+new Date(lcl_date_deb)>=+new Date(this._config.get_date_fin())) break;
             lcl_date_fin=(+new Date(getEndYear_str(lcl_date_deb))<+new Date(date_fin))?getEndYear_str(lcl_date_deb):this._config.get_date_fin();
         }
     }
-
+    //refresh the current table
     async fetch_update_data(){
+        console.log("refresh : fetch_update_data for "+this._config._id);
         const year = this._config._html_framework._year;
-        this.test_worker.postMessage(["start",this._config.get_status(),this._loc.buffer,year]);
-        this.test_worker.postMessage(["check_added",this._config.get_status(),this._loc.buffer,year])
-        this.test_worker.postMessage(["check_suppress",this._config.get_status(),this._loc.buffer,year])       
+        const status = this._config.get_status()||this._status.DEFAULT;
+        this._update_worker.postMessage(["start",status,this._loc.buffer,year]);
+        this._update_worker.postMessage(["check_added",status,this._loc.buffer,year])
+        this._update_worker.postMessage(["check_suppress",status,this._loc.buffer,year])       
     }  
 
 }

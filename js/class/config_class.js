@@ -26,7 +26,7 @@ class config {
         init(){
               this.recover_cooky();  
               //pour des raisons de facilité, on alloue une variable globale pour service.js
-              g_ipServer = this.get_ip();
+              g_ipServer = this.get_ip()||this.get_ip().split(":")[0];
 
         }
 
@@ -80,14 +80,16 @@ class config {
         }
 
         get_ip(){
-                return this._ip_server;
+                return this._ip_server||window.location.host;
         }
         
         check_ip(ip){
                // var ip = this._ip_server;
                 if (ip === null) {
-                        alert("Connection", "Adresse IP invalide, réinitialisation à 127.0.0.1");
-                        this.set_ip(DEFAULT_IP);
+                        let url = (window.location);
+                        this.set_ip( url.host);
+                        alert("Connection", `Adresse IP invalide, réinitialisation à ${this._ip_server}`);
+                        //this.set_ip(DEFAULT_IP);
                         return this._ip_server;
                 }
                 
@@ -95,8 +97,9 @@ class config {
                 if (parseInt(ip.split(".").length) === 4)
                         this.set_ip(ip);
                 else {
-                        newAlert("Connection", "Adresse IP invalide, réinitialisation à 127.0.0.1");
-                        this.set_ip(DEFAULT_IP);
+                        let url = (window.location);
+                        this.set_ip( url.host);
+                        alert("Connection", `Adresse IP invalide, réinitialisation à ${this._ip_server}`);
                 }
 
                 return this._ip_server;

@@ -192,7 +192,6 @@
     }
 
     function service_add_todo(arg){
-        //desc,price,client_id,sitecli_num,price,rem,com_num_com_client
         return promise_db_task(_HTTP+g_ipServer+ "/PhpFormulaire/update_todo.php?"+arg);
     }
     function service_delete_line_todo_list(id){
@@ -205,18 +204,17 @@
 		else
         	return promise_db_task(_HTTP+g_ipServer+ "/PhpFormulaire/get_todo_list.php");
     }
-    function service_add_remise(arg){
-        //desc,price,client_id,sitecli_num,price,rem,com_num_com_client
-        return promise_db_task(_HTTP+g_ipServer+ "/scanStockServer/php/create_com.php?"+arg);
-    }
-    function service_read_desc_article(arg){
-        return promise_db_task(_HTTP+g_ipServer+ "/scanStockServer/php/readJsonDescArticle.php?fullArticle=" + arg)
-    }
+
     function service_detele_command(arg){
        return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/delete_client_order.php"+ "?" + "num_ordre="+arg); 
     }
     function getListArticlesParClientTask(arg){
         return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/getJsonListArticleForClient_2.php"+ "?" + "client="+arg);
+    }
+    
+    function getListNumOrdreParArticleTask(full_article){
+       //return promise_db_task(_HTTP+ g_ipServer + "http://192.168.0.146:3023/api/v1/approFourn/num_ordre/C42-12001663");
+        return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/approFourn/num_ordre/"+full_article,null,"GET");
     }
 
     function service_export_facture_to_csv(arg){
@@ -255,25 +253,102 @@
     }
 ///////////////////FACTURE//////////////////////////////////////
     const g_port=3023;
-    const node_server = "192.168.0.146";
-    function service_create_facture(liste_com_id,facture_num){
+    const node_server = "192.168.0.146";//"192.168.0.2";//"82.64.200.189";//"192.168.0.146";
+    function service_create_facture(liste_com_id,fact_num){
         
-        return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/factures/"+facture_num+"/"+liste_com_id,null,"POST");
+        return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/factures/"+fact_num+"/"+liste_com_id,null,"POST");
     }
     
-    function service_update_facture(facture_num){
-        return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/factures/"+facture_num,null,"PUT");
+    function service_update_facture(fact_num){
+        return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/factures/"+fact_num,null,"PUT");
+    }
+
+    function sql_update_facture(field,val,fact_num){
+        return promise_db_task(`${_HTTP}${node_server.split(":")[0] }:${g_port}/api/v1/factures/${fact_num}/${field}/${val}`,null,"PUT");
+    }
+
+    function sql_update_facture_header(field,val,fact_num){
+        return promise_db_task(`${_HTTP}${node_server.split(":")[0] }:${g_port}/api/v1/factures/header/${fact_num}/${field}/${val}`,null,"PUT");
     }
 
     function service_get_last_facture_num(){
-        //return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/facture/getJsonLastFactureNum.php");
         return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/factures/last",null,"GET");
     }
 
     function getFullFactureClientTask(dateDeb, dateFin,status) {
         return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/facture/getJsonFactureClientBetweenDate.php"+ "?" +"dateDeb=" + dateDeb + "&dateFin=" + dateFin+ "&status=" + status);
     };
-///////////////////////////////////////////////////
+
+///////////////////SITE_CLIENT////////////////////////////
+function service_get_site_client(client_id){
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/siteClient/"+client_id,null,"GET");
+}
+function getFullListeSiteClientTask(dateDeb, dateFin,callback,buffer) {
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/siteclient/full",null,"GET");
+};
+function service_get_siteclient_model(){
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/siteclient/model",null,"GET");
+}
+function getListeSiteParClientTask(id){
+    return promise_db_task(`${_HTTP}${node_server.split(":")[0]}:${g_port}/api/v1/siteclient/${id}`,null,"GET");
+}
+///////////////////ARTICLE////////////////////////////
+function getFullListeArticleTask() {
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/articles/full",null,"GET");
+};
+function service_get_la_model(){
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/articles/model",null,"GET");
+}
+///////////////////////LOC///////////////////////////
+function sql_update_node(table,field,val,id)  {
+    //return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/setJsonUpdate.php"+ "?" + "table=" + table + "&name=" + name+ "&val=" + val+ "&condition=" + condition);
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/"+table+"/"+field+"/"+val+"/"+id,null,"PUT");
+};
+function service_send_form(url)  {
+    return promise_db_task(url,null,"POST");
+};
+function getFullOrdreClientTask(dateDeb, dateFin,status,callback,buffer) {
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/commandes/"+dateDeb+"/"+dateFin,null,"GET");
+};
+function service_get_last_commande(){
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/commandes/last",null,"GET");
+}
+function service_add_remise(arg){
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/commandes/remise/"+arg,null,"POST");
+}
+/////////////////////////////////////////////////
+////////////////////////LOFC/////////////////////
+async function getFullOffreClientTask(dateDeb, dateFin,status,callback,buffer) {
+    return await promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/offrePrix/"+dateDeb+"/"+dateFin,null,"GET");
+};
+
+function service_get_num_offre_prix(offre_date,offre_agent,callback,buffer){
+    return promise_db_task(`${_HTTP}${node_server.split(":")[0]}:${g_port}/api/v1/offrePrix/alloc/${offre_date}/${offre_agent}`,null,"GET");
+ }
+
+/////////////////////////////////////////////////
+/////////////////////CLIENT///////////////////////
+function getJsonClientListTask() {
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/client/",null,"GET");
+};
+function getFullListeClientTask(dateDeb, dateFin,callback,buffer) {
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/client/full",null,"GET");
+};
+function service_get_client_model(){
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/client/model",null,"GET");
+}
+////////////////////////////////////////////////////
+/////////////////////LOG_DB///////////////////////
+function get_db_log() {
+    return promise_db_task(_HTTP+ node_server.split(":")[0] +":"+g_port+ "/api/v1/db_log/",null,"GET");
+};
+////////////////////ARTICLE////////////////////////////////
+function service_read_desc_article(arg){
+    const prefix=arg.split("-")[0];
+    const article=arg.split("-")[1];
+    return promise_db_task(`${_HTTP}${node_server.split(":")[0]}:${g_port}/api/v1/articles/${prefix}/${article}`,null,"GET");
+}
+////////////////////////////////////////////////////////////
     function sql_update_async(table,name,val,condition)  {
         return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/setJsonUpdate.php"+ "?" + "table=" + table + "&name=" + name+ "&val=" + val+ "&condition=" + condition);
     };
@@ -299,17 +374,13 @@
     function getFullDemPrixTask(dateDeb, dateFin,status,callback,buffer) {
         return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/getJsonDemPrixBetweenDate.php"+ "?" + "dateDeb=" + dateDeb + "&dateFin=" + dateFin+ "&status=" + status);
     };
-    function getFullOrdreClientTask(dateDeb, dateFin,status,callback,buffer) {
-        return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/getJsonOrdreClientBetweenDate.php"+ "?" + "dateDeb=" + dateDeb + "&dateFin=" + dateFin+ "&status=" + status);
-    };
+
 
     function getJsonArticleListTask() {
         return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/getListArticle_completion.php");
     };
 
-    function getJsonClientListTask() {
-        return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/getClientList.php",null,"GET");
-    };
+
         function getFullStockTask(status) {
         return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/getJsonStockForStatus.php"+ "?" + "status=" + status);
     };
@@ -321,9 +392,7 @@
    function getOrdreClientForFactureTask(facture_num,callback,buffer) {
         getTaskGeneral(_HTTP+ g_ipServer + "/scanStockServer/php/getJsonOrdreClientForFacture.php", "facture_num=" + facture_num,callback,buffer);
     };
-    function getFullOffreClientTask(dateDeb, dateFin,status,callback,buffer) {
-        return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/offre/getJsonOffreClientBetweenDate.php"+ "?" + "dateDeb=" + dateDeb + "&dateFin=" + dateFin+ "&status=" + status);
-    };
+
     function getFullOffreClientGlobalTask(dateDeb, dateFin,status) {
         return promise_db_task(_HTTP+ g_ipServer + "/scanStockServer/php/offre/getJsonOffreClientGlobalBetweenDate.php"+ "?" + "dateDeb=" + dateDeb + "&dateFin=" + dateFin+ "&status=" + status);
     };
@@ -394,9 +463,6 @@
         getTaskGeneral(_HTTP+ g_ipServer + "/scanStockServer/php/setJsonCreateOfferLine.php", line_arg);
     };
 
-    function service_get_num_offre_prix(offre_num,callback,buffer){
-       getTaskGeneral(_HTTP+ g_ipServer + "/scanStockServer/php/getJsonAllocNumOffre.php", "offre_num=" + offre_num,callback,buffer); 
-    }
     function service_get_num_dem(dem_num,callback,buffer){
        getTaskGeneral(_HTTP+ g_ipServer + "/scanStockServer/php/getJsonAllocDemNum.php", "dem_num=" + dem_num,callback,buffer); 
     }
@@ -497,10 +563,6 @@
     };
     function getInventaireTask(table_name,callback,buffer) {
         getTaskGeneral(_HTTP+ g_ipServer + "/scanStockServer/php/getJsonInventaire.php", "table_name=" + table_name,callback,buffer);
-    };
-	
-	function getFullListeClientTask(dateDeb, dateFin,callback,buffer) {
-        getTaskGeneral(_HTTP+ g_ipServer + "/scanStockServer/php/getJsonListeClient.php", "dateDeb=" + dateDeb ,callback,buffer );
     };
     
     function service_get_desc_article(prefix,article,row_id,callback,buffer){

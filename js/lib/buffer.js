@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-function Buffer(buffer){
+function Buffer(buffer,header){
+    if(header) this.header=header;
     if(buffer){
         this.buffer=this.verify(buffer);
         this.length=buffer.length;
+        
     }
 }
 
@@ -16,7 +18,12 @@ Buffer.prototype.verify=function(buffer){
     for( i=0;i<buffer.length;i++){
         if(!Array.isArray(buffer[i])){
             if((buffer[i]!==null)&&(buffer[i] !== undefined)){
-                buffer[i]=buffer[i].split(";");
+                if(typeof buffer[i] === 'object'){
+                    let t = [];
+                    this.header.forEach((h)=>t.push(buffer[i][h[1]]));
+                    buffer[i]=[... t];
+                }else
+                    buffer[i]=buffer[i].split(";");
             } 
         }
     }

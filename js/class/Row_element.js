@@ -69,7 +69,11 @@ async insertField(row,text,class_name) {
 };
 
 async updateField(row,text,class_name) {
-    row.querySelector("."+class_name).querySelector("span").textContent=text;
+    try{
+        row.querySelector("."+class_name).querySelector("span").textContent=text;
+        }catch(e){
+            console.log("erreur for "+class_name);
+        }
 };
 async updateComboField(row,text,class_name) {
     row.querySelector("."+class_name).querySelector("span").textContent=text;

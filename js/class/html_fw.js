@@ -105,7 +105,7 @@ class _html_fw{
     }
 
     add_btn_sidebar(swipe_name){
-        $('.'+swipe_name).find('.menu_bar').append('<div class="inner"><a id="btnNavToggle" class="btn_sidebar fas fa-align-justify"></a></div>');
+        $('.'+swipe_name).find('.menu_bar').append('<div class="inner"><a id="'+this._id+'_btnNavToggle" class="btn_sidebar fas fa-align-justify"></a></div>');
     }
 
     add_btn_add(swipe_name){
@@ -143,7 +143,6 @@ class _html_fw{
             '<select id="'+this._html_framework.status_combo+'"></select>'+
             '<input type="search"  placeholder="Search" class="'+this._html_framework.input_search+'">'+                                
             this.create_slider()+
-            //this.create_label_slide()+
             '</div>'
             );
     }
@@ -177,7 +176,7 @@ class _html_fw{
     swipify(swipe_name,panel){
         var swipe = 
                 //'<div class="swiper-slide '+swipe_name+'" style="background-color: #8934A1;  height: -webkit-fill-available;">'+
-                '<div class="swiper-slide '+swipe_name+'" style="background-color: #8934A1; ">'+
+                '<div class="swiper-slide '+swipe_name+'">'+
                 panel +
                 '</div>';
         return swipe;

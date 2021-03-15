@@ -19,7 +19,7 @@
     $CAPSTECH_NO_PROP = 2;
     $CAPSTECH_PROP = 1;
 
-	var_dump($_REQUEST);
+	//var_dump($_REQUEST);
     if(isset($_REQUEST['appro_client_combo'])){
       $appro_client_combo = $_REQUEST['appro_client_combo'];
       $appro_client_id=explode("-",$appro_client_combo)[0];

@@ -50,7 +50,7 @@ function inject_sidenav_menu(config){
   $("."+sidenav).append('<div id="swipe_page_list"></div>'+
               '<ul class="nav-link-list">'+
                 '<li><label>Menu</label></li>'+
-                '<li><button type="button" id="parameter" class="btn btn-violet btn-filter">paramètres</button><br></li>'+
+                '<li><button type="button" id="'+config._id+'parameter" class="btn btn-violet btn-filter">paramètres</button><br></li>'+
               '</ul>'+
               
               '<ul class="mapping_menu nav-link-list" aria-expanded="false">'+
@@ -114,7 +114,7 @@ function inject_sidenav_menu(config){
 
                 '<li><a href="'+ip+'/listeArticleParClient/index.html" ><span class="fas fa-sitemap"></span>liste article par client</a></li>'+
 
-                '<li><a href="'+ip+'/calcul_prix/index.html" ><span class="fas fa-sitemap"></span>calcul prix</a></li>'+
+                '<li><a href="'+ip+'/calcul_prix/www/" ><span class="fas fa-sitemap"></span>calcul prix</a></li>'+
 
                 '<li><a href="'+ip+'/capstech_ball/index.html" ><span class="fas fa-sitemap"></span>ball</a></li>'+
 

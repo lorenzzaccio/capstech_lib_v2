@@ -8,7 +8,7 @@ var SIDE_BAR_STATE = "side_bar_open";
 /*--Toggle Slide Menu--*/
 function register_sidenav_btn(config){
     var html_framework = config._html_framework;
-$('#btnNavToggle').on('click touchstart',function (e) {
+$('#'+config._id+'_btnNavToggle').on('click touchstart',function (e) {
     e.stopPropagation();
     var fullContainer = $(this).closest('.'+html_framework.container);
     var header = $(this).closest('header');

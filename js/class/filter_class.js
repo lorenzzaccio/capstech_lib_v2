@@ -118,8 +118,10 @@ class filter{
         document.querySelector(".table-container").addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
         //console.log((document.querySelector("#loc_mainRow0").getBoundingClientRect()).top);
         // detects new state and compares it with the new one
-        if(!document.querySelector("#"+that._id+"_mainRow0")) 
+        if(!document.querySelector("#"+that._id+"_mainRow0") || !document.querySelector("#"+that._id+"_mainRow0").getBoundingClientRect()) {
         	console.log("error mainRow0");
+        	return;
+        }
         if ((document.querySelector("#"+that._id+"_mainRow0").getBoundingClientRect()).top > that.scrollPos)
             //console.log('data-scroll-direction', 'UP');
             that.scroll_down=true;
@@ -338,11 +340,11 @@ class filter{
         this._config.set_date_filter(year+"-01-01");
         this.current_date_slider=year+"-01-01";
         this._config.previous_year=year;
-        this._parent._loc=/*(this._parent._loc)?this._parent._loc.empty():*/new Buffer([]);
+        this._parent._loc=/*(this._parent._loc)?this._parent._loc.empty():*/new Buffer([],this._parent._columns);
         if(this._config._offline){
             //update current buffer
             var tableau = localStorage.getItem(this._config.get_html_framework().table_body_id.split("_")[1]+"_buffer_"+year);
-            return tableau?new Buffer(tableau.split("||")):new Buffer([]);
+            return tableau?new Buffer(tableau.split("||"),this._parent._columns):new Buffer([],this._parent._columns);
         }else{
             
         }

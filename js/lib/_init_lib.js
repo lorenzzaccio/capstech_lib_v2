@@ -1,5 +1,5 @@
 var Loader;
-var slide_name=['la','lofcg','lf','lav','lof','lofc','loc','ls'];
+var slide_name=['la','lofcg','lf','lav','lof','lofc','loc','ls','cli','sitecli'];
 var ordered_slide_list = {};
 var availableTagsFournisseurList;
 var g_swiper;
@@ -12,14 +12,16 @@ var slide_list={
   init_lof:0,
   init_lofc:0,
   init_loc:0,
-  init_ls:0
+  init_ls:0,
+  init_cli:0,
+  init_sitecli:0
 };
 
  function check_url_cors(){  
 	let url = (window.location);
 	_HTTP = url.protocol+"//";
-	g_ipServer=url.host;
-	console.log("read "+_HTTP+ "ip= "+url.host);
+	g_ipServer=url.host.split(":")[0];
+	console.log("read "+_HTTP+ "ip= "+g_ipServer);
 }
 
 async function load(id){

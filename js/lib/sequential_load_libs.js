@@ -1,19 +1,12 @@
 async function seq_load_libs(){
     const libs = [
-    {src:"../../capstech_lib_v2/js/lib/lib/bootstrap.min.441.css"},
+    //{src:"../../capstech_lib_v2/js/lib/lib/bootstrap.min.441.css"},
     {src:"../../capstech_lib_v2/js/lib/lib/jquery-3.4.1.min.js"},
     {src:"../../capstech_lib_v2/js/lib/lib/jquery-ui.min.js"},
-        //{src:"https://code.jquery.com/jquery-3.3.1.min.js",integrity:"sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=",crossorigin:"anonymous"},
-        //{src:"https://code.jquery.com/ui/1.12.0/jquery-ui.min.js",integrity:"sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=",crossorigin:"anonymous"},
-        //{src:"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"},
-        {src:"../../capstech_lib_v2/js/lib/lib/bootstrap.min.441.js"},
-        //{src:"https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"},
+        {src:"../../capstech_lib_v2/js/lib/lib/bootstrap.bundle.js"},
         {src:"../../capstech_lib_v2/js/lib/lib/notify.min.js"},
-        //{src:"https://malsup.github.com/jquery.form.js"},
-        
         {src:"../../capstech_lib_v2/js/lib/service.js"},
         {src:"https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.4.6/js/swiper.js"},
-
         {src:"../../capstech_lib_v2/js/lib/_init_lib.js"},
         {src:"../../capstech_lib_v2/js/lib/form_util.js"},
         {src:"../../capstech_lib_v2/js/lib/index_db.js"},
@@ -24,6 +17,8 @@ async function seq_load_libs(){
         {src:"../../capstech_lib_v2/js/class/config_class.js"},
         {src:"../../capstech_lib_v2/js/class/filter_class.js"},
         {src:"../../capstech_lib_v2/js/class/Row_element.js"},
+        {src:"../../capstech_lib_v2/js/class/modal.js"},
+        {src:"../../capstech_lib_v2/js/class/simple_modal.js"},
 
 
         {src:"../../capstech_lib_v2/js/class/_list_of_nn_tp.js"},
@@ -46,9 +41,7 @@ async function seq_load_libs(){
         {src:"../../capstech_lib_v2/js/lib/pagination.js"},
         {src:"../../capstech_lib_v2/js/lib/sidenav_menu.js"},
 
-
         {src:"../../capstech_lib_v2/js/class/detail_wnd_class.js"},
-
 
         {src:"../../capstech_lib_v2/js/lib/toggle_menu.js"},
         {src:"../../capstech_lib_v2/js/lib/sticky_header.js"},

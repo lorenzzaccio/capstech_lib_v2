@@ -40,7 +40,7 @@ class worker_class{
     let response = await this.get_response_buffer({date_deb,date_fin,status});    
 
     const lcl_buffer = e[2].map((row)=>row.join(";"));
-    const modified_result = is_modified_in_array(lcl_buffer,response.groups);
+    const modified_result = is_modified_in_array(lcl_buffer,response.groups||response);
     //const suppressed_result = is_id_in_array(lcl_buffer,response.groups);
     //const added_result = is_id_in_array(response.groups,lcl_buffer);
     postMessage(['db_update',modified_result,year]);
@@ -57,7 +57,7 @@ class worker_class{
     const lcl_buffer = e[2].map((row)=>row.join(";"));
     //const modified_result = is_modified_in_array(lcl_buffer,response.groups);
     //const suppressed_result = is_id_in_array(lcl_buffer,response.groups);
-    const added_result = is_id_in_array(response.groups,lcl_buffer);
+    const added_result = is_id_in_array(response.groups||response,lcl_buffer);
     postMessage(['db_add_row',added_result,year]);
   }
 
@@ -70,7 +70,7 @@ class worker_class{
 
     const lcl_buffer = e[2].map((row)=>row.join(";"));
     //const modified_result = is_modified_in_array(lcl_buffer,response.groups);
-    const suppressed_result = is_id_in_array(lcl_buffer,response.groups);
+    const suppressed_result = is_id_in_array(lcl_buffer,response.groups||response);
     //const added_result = is_id_in_array(response.groups,lcl_buffer);
     postMessage(['db_suppress_row',suppressed_result,year]);
   }
@@ -81,7 +81,7 @@ class worker_class{
     const date_fin= e[2];
     const status = e[3];
     let response = await this.get_response_buffer({date_deb,date_fin,status});
-    postMessage(["db_sync",parseInt(extract_year(date_deb)),response.groups]);
+    postMessage(["db_sync",parseInt(extract_year(date_deb)),response.groups!==undefined?response.groups:response]);
   }
 
 }
