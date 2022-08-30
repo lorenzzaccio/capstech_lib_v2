@@ -244,19 +244,7 @@ function toggleCheckbox(element)
    console.log("checked :" +$(element).prop( "checked"));
  }
 
- function populate_combo(combo,arr1,arr2){
-     $(combo).empty();
-     if(Array.isArray(arr1) && arr2){
-        arr1.forEach((el,index) => {$(combo).append('<option value="'+arr2[index]+'">'+el+'</option>');})
-     }else{
-        arr1.forEach(el => {$(combo).append('<option value="'+el+'">'+el+'</option>');})
-         /*
-        for(var row in arr){
-            let line = arr[row];
-            $(combo).append('<option value="'+line[0]+'">'+line[1]+'</option>')
-        }*/
-    }
- }
+
 
  function createModal(parent, modal_id,title) {
     var html_modal = 

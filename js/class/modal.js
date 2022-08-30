@@ -29,6 +29,14 @@ class modal {
     insert_input(param){
         this.body.insertAdjacentHTML('beforeend',this.add_block_element_input(param));
     }
+    insert_date(param){
+        this.body.insertAdjacentHTML('beforeend',this.add_block_element_input(param));
+        init_date_picker(param[1],function() {
+            //lof_create_new_dem_num();
+        });
+        const ele = this.body.querySelector('#'+param[1]).value=param[2];
+
+    }
     insert_button(param){
         this.body.insertAdjacentHTML('beforeend',this.add_block_element_button(param));
     }
@@ -225,7 +233,42 @@ class modal {
         `;
         return block;
     }
+/*
+    add_block_element_date(param){
+        let new_param = {
+            label:'',
+            id:'',
+            default_value:'',
+            type:'',
+            step:'',
+            placeholder:''
+        };
 
+        if(Array.isArray(param)){
+            let i=0;
+            for (const index in new_param){
+                new_param[index] = param[i];
+                i++
+              }
+        }else
+            new_param = param;
+        let place_holder="";
+        let value="";
+
+        if((!new_param.default_value || (new_param.default_value!==undefined))  && new_param.placeholder)
+            place_holder=`placeholder="${new_param.placeholder}"`;
+        else
+            value=`value="${new_param.default_value}"`;
+
+        let block = `
+        <div class="block ${new_param.class || ''}">
+            <label>${new_param.label}</label>
+            <input type="${new_param.type|| text}" ${new_param.step||''} name="${new_param.name || new_param.id || 'id_'+Math.random()/10000}" id="${new_param.id || 'id_'+Math.random()/10000}" ${value} ${place_holder} >
+        </div>
+        `;
+        return block;
+    }
+    */
     add_table(param){
         let block = `
             <div class="block_table ${param.class || ''}" id="${param.id || 'id_'+Math.random()/10000}">

@@ -53,7 +53,7 @@ Buffer.prototype.getRow=function(index){
     return null;
 };
 Buffer.prototype.toString=function(){
-    const arr = this.buffer.map( (line)=>line.join(";"));
+    const arr = this.buffer.map( (line)=>Array.isArray(line) ? line.join(";"):line);
     return arr.join("||");
 }
 

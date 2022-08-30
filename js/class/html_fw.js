@@ -1,9 +1,12 @@
 var g_swipe_index = -1;
+let isKeyPressed=[];
 class _html_fw{
-    constructor(id,title_bar,status_options){
+    constructor(id,title_bar,status_options,columns,model){
         this._id=id;
         this._title_bar = title_bar;
         this._status_options = status_options;
+        this._columns=columns;
+        this._model=model||null;
         this.create_framework();
         this.create_ui();
         this.set_combo();
@@ -17,7 +20,7 @@ class _html_fw{
             sidenav:"sidenav_"+this._id,
             modals:"#modals",
             table_body_id:"tb_"+this._id,
-            PAGINATION_BLOCK_ID:"#"+this._id+"_pagination_div",
+            /*PAGINATION_BLOCK_ID:"#"+this._id+"_pagination_div",
             OVERLAY_ID:"overlay_"+this._id,
             STICKY_WND_ID:"sticky_"+this._id,
             CURRENT_PANEL : this._id+"_current_panel",
@@ -30,7 +33,13 @@ class _html_fw{
             COOK_LOG : this._id+"_log",
             status_combo : this._id+"_status_combo",
             input_search : this._id+"_input_search",
+            extra_search_btn : this._id+"_extra_search",*/
+            //COOK_LOG : this._id+"_log",
+            status_combo : this._id+"_status_combo",
+            input_search : this._id+"_input_search",
+            extra_search_btn : this._id+"_extra_search",
             slider : this._id+"_slider",
+            side_bar_open : this._id+"_side_bar_open",
             slider_lbl : this._id+"_slider_lbl",
             refresh_btn : "refresh_btn_"+this._id
         };
@@ -47,10 +56,13 @@ class _html_fw{
         this.add_btn_add(swipe_name);
         this.add_filter_basic(swipe_name);
         this.add_filter(swipe_name);
+        this.add_connection_status(swipe_name);
+        this.add_menu_action(swipe_name);
         this.init_swipe();
         this.init_slider();
         this.init_slider_buttons();
         this.init_btn_slide();
+        this.register_swipe_combo();
     }
 
     toto(){
@@ -79,6 +91,8 @@ class _html_fw{
                         '<div class="'+this._html_framework.sub_ctrl_bar+' outer" style="height:fit-content;text-align:center;">'+
                         '<div class="menu_bar">'+
                         '<div class="inner"><span class="title_header">Liste</span></div>'+
+                        '<button class="btn-prev">prev</button>'+
+                        '<button class="btn-next">next</button>'+
                         '</div>'+
                         '</div>'+
                     '</header>'+
@@ -101,7 +115,7 @@ class _html_fw{
     }
 
     add_sidebar(swipe_name){
-        $('.'+swipe_name).prepend('<div id="sidebar" class="'+this._html_framework.sidenav+' sidenav_style"></div>');
+        $('.'+swipe_name).prepend(`<div id="${this._id}_sidebar" class="${this._html_framework.sidenav} sidenav_style"></div>`);
     }
 
     add_btn_sidebar(swipe_name){
@@ -109,7 +123,7 @@ class _html_fw{
     }
 
     add_btn_add(swipe_name){
-        $('.'+swipe_name).find('.menu_bar').append('<div class="inner"><a id="btnAdd" class="btn_add far fa-plus-square"></a></div>');
+        $('.'+swipe_name).find('.menu_bar').append(`<div class="inner"><a id="${this._id}_btnAdd" class="btn_add far fa-plus-square"></a></div>`);
     }
 
     add_overlay(swipe_name){
@@ -147,20 +161,58 @@ class _html_fw{
             );
     }
 
+    add_connection_status(swipe_name){
+        $(`.${swipe_name} .outer`).append(
+            `<div class="connection_status">
+            <div id="status"></div>
+            <div id="statusDb"></div>
+            <div class='swipeCombo' id="swipeCombo_${this._id}">
+            <select>
+            <option value='LOC'>LOC</option>
+            <option value='LOFC'>LOFC</option>
+            <option value='LOF'>LOF</option>
+            <option value='CLI'>CLI</option>
+            <option value='SITECLI'>SITECLI</option>
+            <option value='LF'>LF</option>
+            <option value='LA'>LA</option>
+            <option value='LAV'>LAV</option>
+            </select></div>
+            </div>`
+            );
+    }
+
+    register_swipe_combo(){
+        $(`#swipeCombo_${this._id}`).on('change',this.specific_slide.bind(this));
+    }
+    specific_slide(obj){
+        for(let sl in g_swiper.slides){
+            let txt = (g_swiper.slides[sl]).className;
+            const target = $(obj.target).val().toLowerCase();
+            if(txt.indexOf(`swiper-slide ${target}_swipe`)!==-1){
+                g_swiper.slideTo(sl);
+                $(`#swipeCombo_${target} select`).val($(obj.target).val());
+                break;
+            }
+        }
+    }
+    add_menu_action(swipe_name){
+    }
+
     add_panel(swipe_name){
         $('.'+swipe_name+' header').after(this.create_panel());
     }
 
     create_panel(){
         var panel = 
-                                '<div class="loader_div" style="display:none"><div class="loader" >'+
-                                    '</div><textarea rows="3" cols="50" class="msg_loader">un message simple</textarea></div>'+
-                                    '<div class="table-container" >'+//style="overflow:auto;height:-webkit-fill-available"
-                                        '<table class="table table-filter">'+
-                                            '<tbody id="'+this._html_framework.table_body_id+'"></tbody>'+
-                                        '</table>'+
-                                    '</div>'+
-                                '</div>';
+                                `<div class="loader_div" style="display:none">
+                                    <div class="loader" ></div>
+                                    <textarea rows="3" cols="50" class="msg_loader">un message simple</textarea>
+                                </div>
+                                <div class="table-container table-container_${this._id}">
+                                    <table class="table table-filter">
+                                        <tbody id="${this._html_framework.table_body_id}"></tbody>
+                                    </table>
+                                </div>`;
         return panel;
     };
 
@@ -199,6 +251,8 @@ class _html_fw{
 
         
     }
+    
+    set_extra_search_btn(){}
 
     set_combo(){
             this.change_color_bar("#820875","#ffffff");
@@ -213,6 +267,24 @@ class _html_fw{
         $('.btn-prev').on('click',()=>{
             swipe.slidePrev();
         });
+        document.onkeydown = (keyDownEvent) => {   
+            isKeyPressed[keyDownEvent.key] = true;  
+        }
+        document.onkeyup = (keyUpEvent) => {
+            isKeyPressed[keyUpEvent.key] = false;
+        };
+        document.onkeydown = (keyDownEvent) => { 
+ 
+            isKeyPressed[keyDownEvent.key] = true;
+            if (isKeyPressed["a"] && isKeyPressed["z"]) {
+                //do something as custom shortcut (a & b) is clicked
+                swipe.slidePrev();
+            };
+            if (isKeyPressed["q"] && isKeyPressed["s"]) {
+                //do something as custom shortcut (a & b) is clicked
+                swipe.slideNext();
+            };
+        }
     }
 
     init_btn_slide(){

@@ -174,6 +174,37 @@ function insertTdLabelValue(row,arg) {
     inp.value = val;
 }
 
+function insertTdTxtAreaValue(row,arg) {
+    var lbl = arg[COL_LBL];
+    var name = arg[COL_NAME];
+    var table = arg[COL_TABLE];
+    var cond = arg[COL_COND];
+    var val = arg[COL_VAL];
+    var ref = arg[COL_REF];
+
+    //td1
+    var td1 = createTD(row, "", "");
+    //p
+    var p = createElement(td1, "p");
+    p.setAttribute("class", "labelValue");
+    p.textContent = lbl;
+    //td2
+    var td2 = createTD(row, "", "");
+    //val
+    var inp = createElement(td2, "textarea");
+    inp.setAttribute("class", "inputValue");
+    inp.setAttribute("type", "text");
+    inp.setAttribute("cols", "75");
+    if((name!==null)&&(name!==""))
+        inp.setAttribute("data-name", name);
+    if((table!==null)&&(table!==""))
+        inp.setAttribute("data-table", table);
+    if((cond!==null)&&(cond!==""))
+        inp.setAttribute("data-cond", cond);
+    if((ref!==null)&&(ref!==""))
+        inp.setAttribute("data-ref", ref);
+    inp.value = val;
+}
 function insertTdComboValue(row,arg,optionList) {
     var lbl = arg[COL_LBL];
     var name = arg[COL_NAME];
@@ -203,10 +234,16 @@ function insertTdComboValue(row,arg,optionList) {
         return inp;
 }
 
+function addRowTxtAreaVal(tableBodyId, arg) {
+    var row = appendRow(tableBodyId, "original");//25);
+    insertTdTxtAreaValue(row, arg);
+}
+
 function addRowLblVal(tableBodyId, arg) {
     var row = appendRow(tableBodyId, "original");//25);
     insertTdLabelValue(row, arg);
 }
+
 function addRowComboVal(tableBodyId, arg, optionList) {
     var row = appendRow(tableBodyId, "original");//25);
     return insertTdComboValue(row, arg, optionList);

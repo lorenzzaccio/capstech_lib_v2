@@ -1,12 +1,12 @@
 //$(document).ready(
-  function load_side_nav(config){
-  inject_sidenav_menu(config);
+  function load_side_nav(config,sidenav){
+  inject_sidenav_menu(config,sidenav);
   aria_expanded_cb();
-  set_ui_pages();
+  set_ui_pages(config);
 }
 //);
-function set_ui_pages(){
-  let list = document.getElementById("swipe_page_list");
+function set_ui_pages(config){
+  let list = document.getElementById(`${config._id}_swipe_page_list`);
   for(let key in slide_list){
     let li = document.createElement("li");
     let line = document.createElement("input");
@@ -25,7 +25,7 @@ function set_ui_pages(){
   }
 }
 
-function add_remove_swipe(){
+async function add_remove_swipe(){
   let name = this.name;
   if((document.querySelectorAll("div.swiper-slide").length===1)&&(this.checked===false)){
     alert("Il faut garder au moins un tableau");
@@ -33,7 +33,7 @@ function add_remove_swipe(){
     return;  
   }
   
-  localStorage.setItem(name,this.checked?1:0);
+  await db_write(name,this.checked?1:0);
   slide_list[name]=this.checked?1:0;
   //this.checked=!this.checked;
   if(this.checked)
@@ -44,13 +44,13 @@ function add_remove_swipe(){
   }
 }
 
-function inject_sidenav_menu(config){
+function inject_sidenav_menu(config,sidenav){
   var ip = "http://"+config.get_ip();
-  var sidenav = config.get_html_framework().sidenav;
-  $("."+sidenav).append('<div id="swipe_page_list"></div>'+
+ // var sidenav = config.get_html_framework().sidenav;
+  $("."+sidenav).append('<div id="'+config._id+'_swipe_page_list"></div>'+
               '<ul class="nav-link-list">'+
                 '<li><label>Menu</label></li>'+
-                '<li><button type="button" id="'+config._id+'parameter" class="btn btn-violet btn-filter">paramètres</button><br></li>'+
+                '<li><button type="button" id="parameter_'+config._id+'" class="btn btn-violet btn-filter">paramètres</button><br></li>'+
               '</ul>'+
               
               '<ul class="mapping_menu nav-link-list" aria-expanded="false">'+
@@ -127,7 +127,7 @@ function inject_sidenav_menu(config){
   );
 }
 
-function aria_expanded_cb(){
+async  function aria_expanded_cb(){
   var $mapping, $tooltip
     $mapping = $('.mapping_menu');
     $tooltip = $('.mapping_content');

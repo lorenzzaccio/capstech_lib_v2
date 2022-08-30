@@ -12,9 +12,9 @@ class _table_row {
 		this.register(this._row_id);
 		this._columns = columns;
 		this.COL_ID = this._columns[this._status.get_id()];
-		this.COL_STATUS = this._columns[this._status.get_status()];
-		this._status_index = this.COL_STATUS[INT];
-		this._status_str = this.COL_STATUS[STR];
+		this.COL_STATUS = this._columns[this._status.get_status()]||null;
+		this._status_index = this.COL_STATUS?this.COL_STATUS[INT]:0;
+		this._status_str = this.COL_STATUS?this.COL_STATUS[STR]:"nop";
 		this._star_id = 0;
 		this.data=data;
 		this._parent=parent;
@@ -76,7 +76,6 @@ class _table_row {
 	}
 
 	create(){
-		//let t = this.data;
 		var sub_id = "sub_" + this._row_id;
 		this._row = (this._row_mapper).appendRowWithId(this._row_id, this._status._statusClass[this.data[this._status_index]], sub_id);
 		(this._row_mapper).insertTdStar(this._row, (this.data[this._columns[this._star_id][INT]]), this._columns[this._star_id][STR]);
@@ -97,9 +96,6 @@ class _table_row {
 					(this_class._row_mapper).updateField(this_class._row, (this_class.data[element[INT]]), decodeURIComponent(escape(element[STR])));
 		});
 		(this._row_mapper).updateComboField(this._row, (this._status._statusClass[this_class.data[this._status_index]]), this._status_str);
-		//localStorage.setItem(this._config._id+"_buffer_"+this._config.get_html_framework()._year,this._parent._loc.toString());
-		//do a resync on next start
-		//localStorage.removeItem(this._config._id+"_buffer_"+this._config.get_html_framework()._year);
 	}
 
 	recycle(index,data){
@@ -107,8 +103,6 @@ class _table_row {
 		this._columns.forEach(function(element, i) {
 			if ((i >= 0) && (i !== that._status_index)){
 					try{
-						//if(data[0]==="10893")
-						//console.log(data[element[INT]]);
 					(that._row_mapper).updateField(document.getElementById(that._row_id), data[element[INT]], decodeURIComponent(escape(element[STR])));
 					}catch(e){
 						console.log("error : line "+that._row_id);

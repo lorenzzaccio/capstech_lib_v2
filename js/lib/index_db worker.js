@@ -1,13 +1,3 @@
-
-var connectDB = async (dbDef) => {
-    try {
-        dbDef.dbCon = await idb.openDB(dbDef.name);
-        dbDef.dbInit = 1; 
-    } catch (error) {
-        
-    }
-  }
-
 var createDB = (dbDef, dbInit) => {
   return new Promise((resolve, reject) => {
     if (!dbDef.dbInit) {
@@ -33,20 +23,11 @@ var createDB = (dbDef, dbInit) => {
 }
 
 var appendDB = async (dbDef, key,newData) => {
-  await db.add(dbDef.dbStore,{uid:key,value:newData});
-    /*const tx = dbDef.dbCon.transaction([dbDef.dbStore], 'readwrite');
-    const store = tx.objectStore(dbDef.dbStore);
-   // newData.map(row => await store.add(row));
-    await store.add(newData, key);
-    await tx.done;*/
-
+  await db_w.add(dbDef.dbStore,{uid:key,value:newData});
   };
 
   async function readDB(dbDef, key, dex){
-    // Find me
-    //const store = db.transaction([dbDef.dbStore]).objectStore(dbDef.dbStore);
-    //const value = await store.get(key);
-    const value = await db.get(dbDef.dbStore,key);
+    const value = await db_w.get(dbDef.dbStore,key);
     return value;
   }
 
@@ -66,12 +47,6 @@ var delDB = (dbDef, key) => {
   }
 
   var updateDB = async (dbDef, key, newData) => {
-    await db.put(dbDef.dbStore,{uid:key,value:newData});
-    console.log(`updating ${key} ${newData}`)
-    /*const tx = db.transaction([dbDef.dbStore], 'readwrite');
-    const store = tx.objectStore(dbDef.dbStore);
-    //const val = (await store.get(key)) || 0;
-    await store.put(newData, key);
-    await tx.done;*/
+    await db_w.put(dbDef.dbStore,{uid:key,value:newData});
   }
 

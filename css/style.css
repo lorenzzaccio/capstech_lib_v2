@@ -44,9 +44,6 @@ body {
 .detail_modal{
   width:-webkit-fill-available;
 }
-.detail_modal .table-container{
-  /* width:500px */
-}
 
 .table-container{
   height: 744px;
@@ -182,6 +179,7 @@ autocomplete {
 	font-size: 10px;
 }
 
+
 table {
   width: 100%;
 } 
@@ -223,5 +221,16 @@ table
 
  .lightgreen{
    background-color: lightgreen;
+ }
+ #status, #statusDb{
+   display:inherit;
+ }
+
+ .swipeCombo {
+   float:right;
+ }
+ 
+ .connection_status {
+   display: inline;
  }
 

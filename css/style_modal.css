@@ -106,3 +106,9 @@ select {
 .fp_header > td {
   color: black;
 }
+.valid_row > td {
+    color: #000;
+  }
+  .valid_header > td {
+    color: #000;
+  }

@@ -8,8 +8,6 @@ class detail_wnd{
         this._confirm_cbk = sql_update_node;
 	}
 	update(arg){
-		//sql_update(arg);
-		//sync_worker.postMessage("sync",this._id,this._year);
 		this._parent._parent.update(arg);
 	}
     set_new_confirm_cbk(confirm_cbk){
@@ -55,25 +53,32 @@ class detail_wnd{
             if((list_lbl[k] !== null) && (list_lbl[k].length!==0)){
             	var cond_id = list_lbl[k][COL_COND1][STR];
             	var colName = list_lbl[k][COL_NAME][STR];
-                var cond=arrow.get(cond_id);//((list_lbl[k][COL_COND1])[STR])+"='"+arrow.get(cond_id)+"'";
-                
+                var cond=arrow.get(cond_id);
                 var col_id = list_lbl[k][COL_NAME][INT];
                 var ui_type = list_lbl[k][COL_UI_TYPE];
-                if(ui_type===UI_COMBO){
-                    let cbk_list = /*this._status._statusClass;//*/list_lbl[k][COL_UI_ARG];
-                    let optionList = cbk_list();//this._status._statusClass;
-                    let default_val_type = parseInt(list_lbl[k][COL_UI_VAL]);
+                switch(ui_type){
+                    case UI_COMBO:
+                        let cbk_list = list_lbl[k][COL_UI_ARG];
+                        let optionList = cbk_list();
+                        let default_val_type = parseInt(list_lbl[k][COL_UI_VAL]);
                     
-                    let val = Object.entries(optionList).findIndex(row=>row[0]===arrow.get(colName)||row[1]===arrow.get(colName));
-                    var combo = addRowComboVal(table_id, [list_lbl[k][COL_LBL], colName, decodeURIComponent(escape(list_lbl[k][COL_TABLE])), cond, /*arrow.get(colName)*/val, col_id],optionList);
-                    if(val!=-1)
-                    $(combo).val(parseInt(Object.entries(optionList)[val][0]));
-                    else
-                    $(combo).val(parseInt(Object.entries(optionList)[0][0]));
-
-                    //if(default_val_type) $(combo).val(arrow.get(colName));
-                }else
-                    addRowLblVal(table_id,[list_lbl[k][COL_LBL],colName,list_lbl[k][COL_TABLE],cond,arrow.get(colName),col_id]);
+                        let val = Object.entries(optionList).findIndex(row=>row[0]===arrow.get(colName)||row[1]===arrow.get(colName));
+                        var combo = addRowComboVal(table_id, [list_lbl[k][COL_LBL], colName, decodeURIComponent(escape(list_lbl[k][COL_TABLE])), cond, /*arrow.get(colName)*/val, col_id],optionList);
+                        if(val!=-1)
+                            $(combo).val(parseInt(Object.entries(optionList)[val][0]));
+                        else
+                            $(combo).val(parseInt(Object.entries(optionList)[0][0]));
+                        break;
+                    case UI_TXT_AREA:
+                        addRowTxtAreaVal(table_id,[list_lbl[k][COL_LBL],colName,list_lbl[k][COL_TABLE],cond,arrow.get(colName),col_id]);
+                        
+                        break
+                    default:
+                        addRowLblVal(table_id,[list_lbl[k][COL_LBL],colName,list_lbl[k][COL_TABLE],cond,arrow.get(colName),col_id]);
+                        break;
+                }
+                
+                    
             } 
         }
 	}
@@ -119,10 +124,10 @@ confirm_click_cb(e,com_id){
     var arr = $(e.target).parents('.modal').find('tr[data-status="modif"]').find('option:selected').toArray();
     for(var l=0;l<arr.length;l++){
         if(($(arr[l]).parents().attr("data-table")!==undefined)&&($(arr[l]).parents().attr("data-name")!==undefined)&&($(arr[l]).parents().attr("data-cond")!==undefined)){
-            var v1=$(arr[l]).parents().attr("data-table");
-            var v2=$(arr[l]).parents().attr("data-name");
-            var v3=$(arr[l]).val().trim();
-            var v4=$(arr[l]).parents().attr("data-cond");
+            var v1=encodeURIComponent($(arr[l]).parents().attr("data-table"));
+            var v2=encodeURIComponent($(arr[l]).parents().attr("data-name"));
+            var v3=encodeURIComponent($(arr[l]).val().trim());
+            var v4=encodeURIComponent($(arr[l]).parents().attr("data-cond"));
             var v5=parseInt($(arr[l]).parents().attr("data-ref"));
             var vconsole="sql_update("+v1+","+v2+","+v3+","+v4+")";
             console.log(vconsole);
@@ -137,7 +142,7 @@ confirm_click_cb(e,com_id){
         if(($(arr[l]).attr("data-table")!==undefined)&&($(arr[l]).attr("data-name")!==undefined)&&($(arr[l]).attr("data-cond")!==undefined)){
             var v1=$(arr[l]).attr("data-table");
             var v2=$(arr[l]).attr("data-name");
-console.log($(arr[l]).val().trim());
+            console.log($(arr[l]).val().trim());
             var v3=/*"'"+this.mysql_real_escape_string(*/encodeURIComponent($(arr[l]).val().trim());/*+"'"*/;// escape("\'"+$(arr[l]).val().trim()+"\'");
 			console.log(v3);
             var v4=$(arr[l]).attr("data-cond");
@@ -145,6 +150,23 @@ console.log($(arr[l]).val().trim());
             var vconsole="sql_update("+v1+","+v2+","+v3+","+v4+")";
             console.log(vconsole);
             //sql_update(v1,v2,v3,v4);
+            this._confirm_cbk(v1,v2,v3,v4);
+            $("#"+this._row_id+" td div."+v2).text($(arr[l]).val().trim());
+        }
+    }
+
+    var arr = $(e.target).parents('.modal').find('tr[data-status="modif"] > td > textarea').toArray();
+    for(var l=0;l<arr.length;l++){
+        if(($(arr[l]).attr("data-table")!==undefined)&&($(arr[l]).attr("data-name")!==undefined)&&($(arr[l]).attr("data-cond")!==undefined)){
+            var v1=$(arr[l]).attr("data-table");
+            var v2=$(arr[l]).attr("data-name");
+            console.log($(arr[l]).val().trim());
+            var v3=encodeURIComponent($(arr[l]).val().trim());
+			console.log(v3);
+            var v4=$(arr[l]).attr("data-cond");
+            var v5=parseInt($(arr[l]).attr("data-ref"));//column
+            var vconsole="sql_update("+v1+","+v2+","+v3+","+v4+")";
+            console.log(vconsole);
             this._confirm_cbk(v1,v2,v3,v4);
             $("#"+this._row_id+" td div."+v2).text($(arr[l]).val().trim());
         }

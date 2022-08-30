@@ -1,13 +1,14 @@
 class parameters{
 
-	constructor(config){
+	constructor(config,hfw){
 		this._config=config;
+        this._hfw = hfw;
 	}
 
 
 	displayParameter() {
         var modalBox;
-        var full_container = '.'+this._config.get_html_framework().container;
+        var full_container = '.'+this._hfw.container;
 
         if (document.getElementById("modalBox") !== null) {
             var parent = $(full_container);
@@ -39,6 +40,7 @@ class parameters{
         //close btn
         $('#closeBtn').on('click',function() {
             //_self.sync_db();
+            this._config.setIp($('#ipServerId').val()||'127.0.0.1');
             $('#modalBox').modal();
             
         });

@@ -1,0 +1,38 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../new_ls"
+		},
+		{
+			"path": "../new_lofcg"
+		},
+		{
+			"path": "../new_lofc"
+		},
+		{
+			"path": "../new_lof"
+		},
+		{
+			"path": "../new_lf"
+		},
+		{
+			"path": "../new_lav"
+		},
+		{
+			"path": "../new_cli"
+		},
+		{
+			"path": "../new_sitecli"
+		},
+		{
+			"path": "../new_loc"
+		},
+		{
+			"path": "../new_la"
+		}
+	],
+	"settings": {}
+}

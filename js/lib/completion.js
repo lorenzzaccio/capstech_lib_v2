@@ -61,5 +61,5 @@ function set_client_list_bck(buffer){
 
  async function fecth_data_completion(funcTask){
     let response = await funcTask();
-    return response.groups;
+    return response;
 }

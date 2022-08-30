@@ -39,7 +39,7 @@ class _list_of_nn_tp {
 	}
 	
 	update(row_id,arr){
-		var existing_row = new (this._table_row)(this.row_mapper,row_id,arr.split(";"),this._config,this._sub_row_class,this._columns,this._status,this._parent);
+		var existing_row = new (this._table_row)(this.row_mapper,row_id,Array.isArray(arr)?arr:arr.split(";"),this._config,this._sub_row_class,this._columns,this._status,this._parent);
 		existing_row.update();
 	}
 
@@ -54,7 +54,7 @@ class _list_of_nn_tp {
 		document.getElementById(this.container).display='none';
 		const limit = (arr.length<list_size)?arr.length:list_size;
 		for (var k = 0; k <  limit; k++) {
-			if (arr[k] === null)
+			if ((arr[k] === null) || (arr[k] === undefined ))
 				continue;
 			if( Object.prototype.toString.call( arr[k] ) !== '[object Array]' ) 
 				rowOrdreClient = arr[k].split(";");
