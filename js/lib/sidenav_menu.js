@@ -1,7 +1,7 @@
 //$(document).ready(
   function load_side_nav(config,sidenav){
   inject_sidenav_menu(config,sidenav);
-  aria_expanded_cb();
+  aria_expanded_cb(config);
   set_ui_pages(config);
 }
 //);
@@ -53,11 +53,11 @@ function inject_sidenav_menu(config,sidenav){
                 '<li><button type="button" id="parameter_'+config._id+'" class="btn btn-violet btn-filter">paramètres</button><br></li>'+
               '</ul>'+
               
-              '<ul class="mapping_menu nav-link-list" aria-expanded="false">'+
+              '<ul id="mapping_'+config._id+'" class="mapping_menu nav-link-list" aria-expanded="false">'+
                 '<li><a><span  class="fa fa-lg fa-home"></span>Mapping</a></li>'+
               '</ul>'+
               
-              '<ul class="mapping_content "  hidden="hidden">'+
+              '<ul id="mapping_'+config._id+'" class="mapping_content "  hidden="hidden">'+
                 '<li class="" id="mapping_content"></li>'+
               '</ul>'+
               
@@ -127,10 +127,10 @@ function inject_sidenav_menu(config,sidenav){
   );
 }
 
-async  function aria_expanded_cb(){
+async  function aria_expanded_cb(config){
   var $mapping, $tooltip
-    $mapping = $('.mapping_menu');
-    $tooltip = $('.mapping_content');
+    $mapping = $(`#mapping_${config._id}.mapping_menu`);
+    $tooltip = $(`#mapping_${config._id}.mapping_content`);
     return $mapping.on('click touchstart',() => {
       if ($tooltip.attr('hidden') === 'hidden') {
         $tooltip.removeAttr('hidden')

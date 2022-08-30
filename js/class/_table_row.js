@@ -2,7 +2,7 @@ var _arr_obj={};
 
 class _table_row {
 
-	constructor(row_mapper,row_id, data,config,sub_row_class,columns,status_class,parent) {
+	constructor(row_mapper,row_id, data,config,sub_row_class,columns,status_class,parent,ui_map) {
 		this._row_mapper = row_mapper;
 		this._row_id = row_id;
 		this._config = config;
@@ -13,12 +13,13 @@ class _table_row {
 		this._columns = columns;
 		this.COL_ID = this._columns[this._status.get_id()];
 		this.COL_STATUS = this._columns[this._status.get_status()]||null;
-		this._status_index = this.COL_STATUS?this.COL_STATUS[INT]:0;
-		this._status_str = this.COL_STATUS?this.COL_STATUS[STR]:"nop";
+		this._status_index = this._status.get_status()||0;
+		this._status_str = this._status.get_lbl_status()||"nop";
 		this._star_id = 0;
 		this.data=data;
+		this._ui_map=ui_map;
 		this._parent=parent;
-	};
+	}
 
 	get_data(){
 		var arr = $("#"+this._row_id+" td").toArray();
@@ -35,7 +36,8 @@ class _table_row {
 		return myMap;
 	}
 
-	show_sub_row(){
+	show_sub_row(e){
+		e.preventDefault();
 		if(this._sub_row) 
 	        this._sub_row.display_sub_row();    
 	    else
@@ -80,11 +82,21 @@ class _table_row {
 		this._row = (this._row_mapper).appendRowWithId(this._row_id, this._status._statusClass[this.data[this._status_index]], sub_id);
 		(this._row_mapper).insertTdStar(this._row, (this.data[this._columns[this._star_id][INT]]), this._columns[this._star_id][STR]);
 		var this_class = this;
+		if(this._ui_map){
 		this._columns.forEach(function(element, index) {
-			if ((index >= 0) && (index !== this_class._status_index) && (index !== this_class._star_id))
-					(this_class._row_mapper).insertField(this_class._row, (this_class.data[element[INT]]), decodeURIComponent(escape(element[STR])));
+			if(this_class._ui_map[element[STR]]){
+				const f = this_class._ui_map[element[STR]];
+				(this_class._row_mapper).insertField(this_class._row, f(this_class.data[index]), decodeURIComponent(element[STR]));
+			}else
+				(this_class._row_mapper).insertField(this_class._row, (this_class.data[element[INT]]), decodeURIComponent(escape(element[STR])));
 		});
-		(this._row_mapper).insertField(this._row, (this._status._statusClass[this_class.data[this._status_index]]), this._status_str);
+		}else{
+			this._columns.forEach(function(element, index) {	
+				if ((index >= 0) && (index !== this_class._status_index) && (index !== this_class._star_id))
+						(this_class._row_mapper).insertField(this_class._row, (this_class.data[element[INT]]), decodeURIComponent(escape(element[STR])));
+			});
+			(this._row_mapper).insertField(this._row, (this._status._statusClass[this_class.data[this._status_index]]), this._status_str);
+		}
 	}
 
 	update(){
@@ -111,5 +123,4 @@ class _table_row {
 		});
 		(this._row_mapper).updateComboField(document.getElementById(that._row_id), (this._status._statusClass[data[this._status_index]]), this._status_str);
 	}
-
 }

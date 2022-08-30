@@ -7,23 +7,24 @@ class dynamic_scroll{
         this.bottomSentinelPreviousY = 0;
         this.bottomSentinelPreviousRatio = 0;
         this.currentIndex=0;
-        this._id=this._config._id;
-        this.listSize=this._config._list_size;
-        this.increment = this.listSize/2+8;
+        this._id=this._config.table_body_id.split('_')[1];
+        this.listSize=97;//this._config._list_size;
+        this.increment = this.listSize;///2+8;
+        //document.getElementById(`table-container_${this._id}`).height=window.innerHeight - 40;
 	}
 set_tracers(){
     const tr_list =  document.querySelectorAll(`.table-container_${this._id} tr`);
     let tracer_up = false;let index=0;let tracer_down = false;
     for(let row of tr_list){
         if((row.display !== 'none')&& !tracer_up){
-            row.classList.add("tracer_up");
+            row.classList.add(`tracer_up_${this._id}`);
             tracer_up=true;
             index=0;
         }
         //alloctate tracer +3
         if((row.display !== 'none')&& tracer_up){
             if(index===4){
-                row.classList.add("tracer_up_3");
+                row.classList.add(`tracer_up_3_${this._id}`);
                 break;
             }
             index++;
@@ -32,14 +33,14 @@ set_tracers(){
     }
     for(let row of Array.from(tr_list).reverse()){
         if((row.display !== 'none')&& !tracer_down){
-            row.classList.add("tracer_down");
+            row.classList.add(`tracer_down_${this._id}`);
             tracer_down=true;
             index=0;
         }
         //alloctate tracer +3
         if((row.display !== 'none')&& tracer_down){
             if(index===20){
-                row.classList.add("tracer_down_3");
+                row.classList.add(`tracer_down_3_${this._id}`);
                 break;
             }
             index++;
@@ -58,19 +59,19 @@ init_io(buf){
 }
 initIntersectionObserver() {
     const options = {
-        root: null //document.querySelector(`.table-container_${this._id}`) 
+        root:document.querySelector(`.table-container_${this._id}`) 
     }
     
     const that = this;
     const callback = entries => {
         entries.forEach(entry => {
-            if (entry.target.classList.toString().indexOf(`tracer_up`)!==-1) {
-                const f=that.topSentCallback.bind(that)(entry);
-                //f(entry);
+            if (entry.target.classList.toString().indexOf(`tracer_up_${this._id}`)!==-1) {
+                const f=that.topSentCallback.bind(that);
+                f(entry);
                 console.log(".tracer_up");
                 //console.log(document.querySelector(".table-container").style.paddingTop);
             } else {
-                if (entry.target.classList.toString().indexOf(`tracer_down`)!==-1) {
+                if (entry.target.classList.toString().indexOf(`tracer_down_${this._id}`)!==-1) {
                     console.log(`.tracer_down`);
                     //console.log(document.querySelector(".table-container").style.paddingTop);
                     if(!that.scroll_down){
@@ -93,15 +94,15 @@ initIntersectionObserver() {
 
     var observer = new IntersectionObserver(callback, options);
     
-    observer.observe(document.querySelector('.tracer_up'));
-    observer.observe(document.querySelector('.tracer_down'));
+    observer.observe(document.querySelector(`.tracer_up_${this._id}`));
+    observer.observe(document.querySelector(`.tracer_down_${this._id}`));
 
-    document.querySelector(`.tracer_up`).firstChild.style.backgroundColor="red";
+    document.querySelector(`.tracer_up_${this._id}`).firstChild.style.backgroundColor="red";
     //document.querySelector(`#${this._id}_mainRow3`).firstChild.style.backgroundColor="green";
     //document.querySelector(`#${this._id}_mainRow${this.listSize/2}`).firstChild.style.backgroundColor="blue";
 
     //document.querySelector(`#${this._id}_mainRow${this.listSize-3}`).firstChild.style.backgroundColor="pink";
-    document.querySelector(`.tracer_down`).firstChild.style.backgroundColor="purple";
+    document.querySelector(`.tracer_down_${this._id}`).firstChild.style.backgroundColor="purple";
     
     //const g = this.scroll_down.bind(this);
     //document.querySelector("#scroll_btn").onclick=g;
@@ -110,9 +111,9 @@ initIntersectionObserver() {
 init_scroll_direction(){
     const that=this;
     that.scroll_down = false;
-    
+    const id = this._id;
     document.querySelector(`.table-container_${this._id}`).addEventListener("scroll", function(){
-        const main_row0 = document.querySelector('.tracer_up');
+        const main_row0 = document.querySelector(`.tracer_up_${id}`);
         // detects new state and compares it with the new one
         if(!main_row0 || !main_row0.getBoundingClientRect()) {
             console.log("error mainRow0");
@@ -170,7 +171,7 @@ topSentCallback(entry){
       console.log("to top");
     const firstIndex = this.getSlidingWindow(false);
     //document.querySelector("#"+this._id+`_mainRow${this.listSize-1-10}`).scrollIntoView();
-    document.querySelector('.tracer_down_3').scrollIntoView();
+    document.querySelector(`.tracer_down_3_${this._id}`).scrollIntoView();
     this.recycleDOM(firstIndex);
     this.currentIndex = firstIndex;
     this.disR20=true;
@@ -200,7 +201,7 @@ botSentCallback(entry){
         if(this.currentIndex>=this._buffer.length)
             return;
         //document.querySelector("#"+this._id+`_mainRow3`).scrollIntoView();
-        document.querySelector('.tracer_up_3').scrollIntoView();
+        document.querySelector(`.tracer_up_3_${this._id}`).scrollIntoView();
         this.recycleDOM(firstIndex);
         this.currentIndex = firstIndex;
         console.log("this.scroll_down"+this.scroll_down);
@@ -220,11 +221,11 @@ recycleDOM(offset){
             //alert("end of buffer");
         row.recycle(i+offset,data);
     }
-    document.querySelector('.tracer_up').firstChild.style.backgroundColor="red";
+    document.querySelector(`.tracer_up_${this._id}`).firstChild.style.backgroundColor="red";
     //document.querySelector("#"+this._id+"_mainRow"+this.listSize/2).firstChild.style.backgroundColor="blue";
     //document.querySelector(`#${this._id}_mainRow3`).firstChild.style.backgroundColor="green";
     //document.querySelector(`#${this._id}_mainRow${this.listSize-3}`).firstChild.style.backgroundColor="pink";
-    document.querySelector('.tracer_down').firstChild.style.backgroundColor="purple";
+    document.querySelector(`.tracer_down_${this._id}`).firstChild.style.backgroundColor="purple";
 
 }
 /*

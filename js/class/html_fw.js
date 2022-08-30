@@ -10,6 +10,7 @@ class _html_fw{
         this.create_framework();
         this.create_ui();
         this.set_combo();
+        
     }
 
     create_framework(){
@@ -195,6 +196,21 @@ class _html_fw{
             }
         }
     }
+
+    specific_slide_btn(obj){
+        for(let sl in g_swiper.slides){
+            let txt = (g_swiper.slides[sl]).className;
+            const target = $(obj.target).text().toLowerCase();
+            if(txt.indexOf(`swiper-slide ${target}_swipe`)!==-1){
+                setTimeout(function () {
+                    //var index = parseInt(ordered_slide_list[sl][1]);
+                    g_swiper.slideTo(parseInt(sl));
+                }, 175);
+                break;
+            }
+        }
+    }
+
     add_menu_action(swipe_name){
     }
 
@@ -292,11 +308,12 @@ class _html_fw{
          g_swiper=swiper;
          let index=0;
         for(let key in ordered_slide_list){
-            $('#btn_'+key.split("_")[1]).on('click',()=>{
-                setTimeout(function () {
+            $('#btn_'+key.split("_")[1]).on('click',(obj)=>{
+                /*setTimeout(function () {
                     var index = parseInt(ordered_slide_list[key][1]);
                     g_swiper.slideTo($('.swiper-slide').length - 1 - index);
-                }, 175);
+                }, 175);*/
+                this.specific_slide_btn(obj);
 
             });
             index++;

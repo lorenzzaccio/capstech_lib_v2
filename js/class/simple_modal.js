@@ -51,7 +51,11 @@ class simple_modal {
 
     async send_form(){
         try{
-            await service_send_form(`${this.param.url_form}/${JSON.stringify(Object.fromEntries(this.FD))}`);
+            if(this.param.method==="GET")
+                await service_send_form_get(`${this.param.url_form}/${JSON.stringify(Object.fromEntries(this.FD))}`);
+            else
+                await service_send_form(`${this.param.url_form}/${JSON.stringify(Object.fromEntries(this.FD))}`);
+            //await service_send_form2(`${this.param.url_form}`,this.FD);
         }catch(e){
             alert("erreur formulaire"+e);
         }

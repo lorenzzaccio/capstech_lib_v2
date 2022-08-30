@@ -33,6 +33,17 @@ body {
  padding:0px 5px 0px 5px;
 }
 
+.full-circle-prod {
+  background-color: rgba(204, 0, 102, 0);
+  border: 4px solid #333;
+  text-align: center;
+  font-weight: 600;
+  -moz-border-radius:75px;
+  -webkit-border-radius: 75px;
+  padding:0px 5px 0px 5px;
+  width:max-content;
+ }
+
 .full-rect {
  background-color: rgba(204, 0, 102, 0);
  border: 4px solid #333;
@@ -178,7 +189,10 @@ autocomplete {
 	background-color: #267429;
 	font-size: 10px;
 }
-
+.btn-file-subrow{
+	background-color: #75316c;
+	font-size: 10px;
+}
 
 table {
   width: 100%;

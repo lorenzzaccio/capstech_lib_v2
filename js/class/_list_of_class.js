@@ -1,19 +1,19 @@
 class _list_of_class {
-	constructor(parent,custom_config,list_class_tp,list_class_row,table_row_class,sub_row_class,columns,html_framework,status){
+	constructor(parent,custom_config,list_class_tp,list_class_row,table_row_class,sub_row_class,columns,html_framework,status,ui_map){
 	    this._parent = parent;
 		this._hfw = html_framework;
         this._id=this._hfw._id;
         this._table_body_id = this._hfw._html_framework.table_body_id;
 		this._config = custom_config || new config(this._id);//html_framework.get_html_framework());
         this.params = new parameters(this._config,this._hfw);
-        this._lll_row = new Lib_row(this._table_body_id);
+        this._ui_map = ui_map;
         this._sub_row_class = sub_row_class;
         this._columns = columns;
         this._status=status;
         //init year sync
         this._year_sync=[];
-        this._loc = new Buffer(new Array());
-		this._liste_class = new _list_of_nn_tp(this._table_body_id,this._lll_row,this._config,this._sub_row_class,this._columns,this._status,table_row_class,this._loc);
+        this._loc = new Buffer(new Array(),columns);
+		this._liste_class = new _list_of_nn_tp(this._table_body_id,null,this._config,this._sub_row_class,this._columns,this._status,table_row_class,this._loc,this,this._ui_map);
         
         this._table_row_class = table_row_class;//_table_row;
 		this.init();
@@ -57,16 +57,21 @@ class _list_of_class {
     
     create_row_mapping(){
     	if(this._columns!==undefined){
-        (this._columns).forEach(function(element){
-            $('.mapping_content').append('<li><span class="map_lbl"><input type="checkbox" value="'+element[1]+'" checked><p>'+element[1]+'</p></span></li>');
-        });  
-        //register
-        $('.map_lbl').find('input').on('click', function () {
-            var col_class = $(this).val();
-        $('.'+col_class).toggle(this.checked);
-        });  
-
+            (this._columns).forEach(function(element){
+                $('.mapping_content').append('<li><span class="map_lbl"><input type="checkbox" value="'+element[1]+'" checked><p>'+element[1]+'</p></span></li>');
+            });  
+            //const self = this;
+            //register
+            $('.map_lbl').find('input').on('click', (e)=>{
+                var col_class =e.target.value;// $(this).val();
+                $(`#tb_${this._config._id} .${col_class}`).parent().toggle(this.checked);
+            });  
     	}
+    }
+
+    show_hide_column(){
+        var col_class = $(this).val();
+        $(`#mapping_${this._config._id}.${col_class}`).parent().toggle(this.checked);
     }
 
     init_parameter_btn(){
@@ -145,7 +150,8 @@ class _list_of_class {
 
     init_worker(){
         this._myWorker = new Worker('../../new_'+this._id+'/public_html/js/'+this._id+'_update_worker.js');
-        this.test_worker = this._myWorker; 
+        //this.test_worker = this._myWorker; 
+        this._myWorker.postMessage({code:'init',netconf:net_conf});
         const f = this.handle_worker_response.bind(this);
         this._myWorker.onmessage= f; 
     } 
@@ -153,8 +159,8 @@ class _list_of_class {
     handle_worker_response(e){
         var arg = e.data;
         if(arg[0]==="db_sync"){
-            if(arg[1] && arg[2] && arg[2]!==-1){
-                db_write(this._config._id+"_buffer_"+arg[1],new Buffer(arg[2].groups || arg[2]).toString() );
+            if(arg[1] && arg[2]){
+                db_write(this._config._id+"_buffer_"+arg[1],new Buffer(arg[2].groups || arg[2],this._columns).toString() );
                 console.log(" syncing received "+arg[1]);
                 var year = $('#'+this._hfw._html_framework.slider).val();
                 if(parseInt(year)===arg[1])
@@ -171,20 +177,20 @@ class _list_of_class {
                     Loader.log("something to update"+modified_result[row][0]);
                     const line = modified_result[row].split(";");
                     const id =line[0];
+                    let row_index;
                     //check redundancy
                     const r_index = redundancy.findIndex((row) => row===id);
                     if(r_index===-1) redundancy.push(id); else { redundancy++;console.log(`redundancy detected for ${id}`); continue;}
-                    let row_id;
                     //update le scroll buffer
                     if(this._filter._buf){
-                    	row_id = this._filter._buf.findIndex((row)=>row[0]===id);
-                    	this._liste_class.update(this._config._id+"_mainRow"+row_id,line.join(";"));    
+                    	row_index = this._filter._buf.findIndex((row)=>row[0]===id);
+                    	this._liste_class.update(this._config._id+"_mainRow"+row_index,line.join(";"));   
+                        //update filter buffer accordingly
+                        this._filter._buf[row_index]=line;
                     }
-                    //this_loc = buffer interne des données
                     //retrouve l'index du tableau pour l'id correspondant
                     const index = this.filtreTexte(this._loc,line[0]);
                     if(index !==-1){
-                        //console.log("row_index="+index);
                         let i=0;
                         //retrouve la colonne modifiée
                         const col_index = this._loc.getRow(index).findIndex( (el)=> {
@@ -192,11 +198,10 @@ class _list_of_class {
                         });
 
                         if(col_index!==-1){
-                            //console.log("col_index="+col_index);
                             //update le buffer interne de données
                             this._loc.setValue(line[col_index],index,col_index);
                             //update ui and local mem
-                            row_id ?this._liste_class.update(this._config._id+"_mainRow"+row_id,line):"";  
+                            row_index ?this._liste_class.update(this._config._id+"_mainRow"+row_index,line):"";  
                             console.log(`updating ${index} ${col_index}`);
                         }
                         //update scroll buffer
@@ -219,15 +224,11 @@ class _list_of_class {
                 const year = arg[2];
                 for(let row in modified_result){
                     Loader.log("some rows to add"+modified_result[row][0]);
-                    //insert_row_to_DOM(modified_result[row]);
                     this._loc.buffer.push(modified_result[row].split(";"));
-                    //insert_row_to_loc(modified_result[row]);
-                    //this._filter.add_row(modified_result[row]);
                 }
                 //refresh filter
                 this._filter.refresh();
                 db_write(this._config._id+"_buffer_"+year,this._loc.toString());
-
             }
         }
 
@@ -238,11 +239,8 @@ class _list_of_class {
                 for(let row in modified_result){
                     Loader.log("some rows to add"+modified_result[row][0]);
                     const row_id = modified_result[row].split(";")[0];
-                    //delete_row_to_DOM(modified_result[row]);
-                     //const ret_index=this._loc.buffer.filter((row)=>{parseInt(row[0])===parseInt(row_id)||row[0]===row_id});
                      this._loc.buffer.map((row,index)=>{ if(parseInt(row[0])===parseInt(row_id)) this._loc.buffer.splice(index)});
                      
-                     //if(index>=0)this._loc.buffer.splice(index);
                 }
                 //refresh filter
                 this._filter.refresh();
@@ -271,12 +269,12 @@ class _list_of_class {
         let lcl_date_fin=(+new Date(getEndYear(lcl_date_deb))<+date_fin)?getEndYear_str(lcl_date_deb):this._config.get_date_fin();
         for(let year=start_year;year<=end_year;year++){
             const l = await db_read(this._config._id+"_buffer_"+year);
-            this._loc=l?new Buffer( l.split("||")): null ;
+            this._loc=l?new Buffer( l.split("||"),this._columns): null ;
             
             if(this._loc){
                 //launch synchronisation
                 if(year===parseInt(document.getElementById(this._hfw._html_framework.slider).value)){
-                    this.test_worker.postMessage(["start",this._config.get_status()||this._status.DEFAULT,this._loc.buffer,year]);
+                    this._myWorker.postMessage(["start",this._config.get_status()||this._status.DEFAULT,this._loc.buffer,year]);
                 }
                 if(year===parseInt(document.getElementById(this._hfw._html_framework.slider).value))
                     this._filter.cbk_search();
@@ -294,7 +292,14 @@ class _list_of_class {
         $('#pacman').show();
         const cl = this || self;
         const year =  cl._hfw._html_framework._year;
-        this.test_worker.postMessage(["start",cl._config.get_status(),cl._loc.buffer,year]);      
+        this._myWorker.postMessage(["start",cl._config.get_status(),cl._loc.buffer&&cl._loc.buffer||[],year]);      
     }  
+    async fetch_update_by_id(row){
+        $('#pacman').show();
+        //const cl = this || self;
+        const t = this._sub_row_class;
+        const year =  this._currentDate.split("-")[0];//"2021";cl._hfw._html_framework._year;
+        this._myWorker.postMessage(["push_update",0,[{0:row}],year,g_id]);      
+    } 
 
 }

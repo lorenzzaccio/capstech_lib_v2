@@ -70,7 +70,7 @@ async insertField(row,text,class_name) {
 
 async updateField(row,text,class_name) {
     try{
-        row.querySelector("."+class_name).querySelector("span").textContent=text;
+        (row.querySelector("."+class_name).querySelector("span")||row.querySelector("."+class_name)).textContent=text;
         }catch(e){
             console.log("erreur for "+class_name);
         }

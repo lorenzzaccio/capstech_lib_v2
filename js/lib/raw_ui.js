@@ -63,12 +63,43 @@ function createSimpleButtonStyle(divId, text, callback, style) {
     var select = document.getElementById(divId)||divId;
     var el = document.createElement("button");
     el.setAttribute("class", style);
-    //el.setAttribute("data-dismiss", "modal");
     el.textContent = text;
     el.value = text;
     el.setAttribute('onclick', callback);
     el.onclick=callback;
     select.appendChild(el);
+    return el;
+}
+function createSimpleDivStyle(divId, frame_id, callback, style) {
+  
+    var select = document.getElementById(divId)||divId;
+    let el = document.createElement("div");
+    el.setAttribute("class", style);
+    let sub_el = document.createElement("iframe");
+    sub_el.setAttribute('id',frame_id);
+    el.appendChild(sub_el);
+    /*let sub_el = document.createElement("object");
+    sub_el.setAttribute('data',filename);
+    sub_el.setAttribute('type','application/pdf');
+    sub_el.setAttribute('width','50');
+    sub_el.setAttribute('height','50');
+    el.insertAfter(sub_el);*/
+    select.appendChild(el);
+    /*el.insertAdjacentHTML('afterend',html_text)*/
+    el.setAttribute('onclick', callback);
+    el.onclick=callback;
+    return el;
+}function createSimpleFileStyle(divId, id, callback, style) {
+    var select = document.getElementById(divId)||divId;
+    let el = document.createElement("input");
+    el.setAttribute("id", id);
+    el.setAttribute("class", style);
+    el.setAttribute("type", "file");
+    //el.value = '+';
+    select.appendChild(el);
+    el.addEventListener("change", callback, false);
+    //el.setAttribute('onclick', callback);
+    //el.onclick=callback;
     return el;
 }
 

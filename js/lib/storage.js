@@ -50,7 +50,12 @@ async function db_open(/*db_name,version*/){
 
 
 async function db_set(key, newData){
-	await readDB(dbDef,key)?await updateDB(dbDef,key,newData):await appendDB(dbDef,key, newData );
+	try{
+		await readDB(dbDef,key)?await updateDB(dbDef,key,newData):await appendDB(dbDef,key, newData );
+	}catch(e){
+		await appendDB(dbDef,key, newData );
+	}
+	
 }
 
 async function db_write(key,value){

@@ -3,7 +3,8 @@ const DATE_PERIOD = -365;
 const YEAR_MONTH = 12;
 const DEFAULT_IP = "127.0.0.1";
 let token_connect=false;
-
+const _HTTP = "http://";
+const g_port=3023;
 let _offline = false;
 
 //const SQL_UPDATE_COND_VALIDER_OFFRE = "offrePrix_id=";

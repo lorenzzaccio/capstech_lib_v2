@@ -26,7 +26,8 @@ class config {
             this._search_cookie=this._id+"_search",
             this._cook_current_panel = this._id+"_current_panel",
             this._cook_date_deb = this._id+"_date_deb",
-            this._cook_ip = this._id+"_ipServer",
+            this._cook_ip = "ip_server";//this._id+"_ipServer",
+            this._cook_node_server = "node_server";//this._id+"_ipServer",
             this._cook_combo_status = this._id+"_combo_status",
             this._cook_status = this._id+"_status",
             this._cook_date_filter =this._id+"_date_filter",
@@ -47,7 +48,8 @@ class config {
                 await this.recover_cooky();  
                 await this.check_config();
                 //pour des raisons de facilité, on alloue une variable globale pour service.js
-                g_ipServer = this.get_ip()||this.get_ip().split(":")[0];
+                //g_ipServer = this.get_ip()||this.get_ip().split(":")[0];
+                //g_node_server = this.get_node_server()||this.get_node_server().split(":")[0];
         }
 
         async recover_cooky(){
@@ -56,6 +58,7 @@ class config {
                 this._search = await db_read(this._search_cookie) || "";
                 this._dateDeb = await db_read(this._cook_date_deb)||this._dateDeb;
                 this._ip_server = await db_read(this._cook_ip)||DEFAULT_IP;
+                this._node_server = await db_read(this._cook_node_server)||DEFAULT_IP;
                 this._combo_status = await db_read(this._cook_combo_status);
                 this._status = await db_read(this._cook_status);
                 this._date_filter = await db_read(this._cook_date_filter)||DEFAULT_DATE_DEB;
@@ -68,7 +71,7 @@ class config {
 
         async check_config(){
             //ip
-            await this.check_ip(await this.get_ip());
+           // await this.check_ip(await this.get_ip());
             //dateDeb
             await this.check_date_deb(await this.get_date_deb());
             await this.check_date_filter(await this.get_date_filter());
@@ -101,10 +104,18 @@ class config {
                 }
         }
 
+        async set_node_server(ip){
+                if ((ip !== null)&& (parseInt(ip.split(".").length) === 4)) {
+                        this._node_server = ip;
+                        await db_write(this._cook_node_server, ip);
+                }
+        }
         get_ip(){
                 return this._ip_server||window.location.host;
         }
-        
+        get_node_server(){
+                return this._node_server||window.location.host;
+        }
         check_ip(ip){
                // var ip = this._ip_server;
                 if (ip === null) {
@@ -126,7 +137,27 @@ class config {
 
                 return this._ip_server;
         }
-
+        check_node_server(ip){
+                // var ip = this._ip_server;
+                 if (ip === null) {
+                         let url = (window.location);
+                         this.set_node_server( url.host);
+                         alert("Connection", `Adresse IP invalide, réinitialisation à ${this._node_server}`);
+                         //this.set_ip(DEFAULT_IP);
+                         return this._node_server;
+                 }
+                 
+         
+                 if (parseInt(ip.split(".").length) === 4)
+                         this.set_node_server(ip);
+                 else {
+                         let url = (window.location);
+                         this.set_node_server( url.host);
+                         alert("Connection", `Adresse IP invalide, réinitialisation à ${this._node_server}`);
+                 }
+ 
+                 return this._node_server;
+         }
         check_date_deb(dateDeb){
             if ((dateDeb === null) || (dateDeb === undefined)){
                 this.set_date_deb(DEFAULT_DATE_DEB);

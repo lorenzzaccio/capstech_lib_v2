@@ -34,4 +34,3 @@ function db_update(key,value){
 function db_delete(key){
 	(_LOCAL_STORAGE)?localStorage.removeItem(key):delDB(dbDef,key);
 }
-

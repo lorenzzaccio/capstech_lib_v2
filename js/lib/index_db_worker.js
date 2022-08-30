@@ -1,3 +1,4 @@
+
 var createDB = (dbDef, dbInit) => {
   return new Promise((resolve, reject) => {
     if (!dbDef.dbInit) {
@@ -26,10 +27,11 @@ var appendDB = async (dbDef, key,newData) => {
   await db_w.add(dbDef.dbStore,{uid:key,value:newData});
   };
 
-  async function readDB(dbDef, key, dex){
+  let readDB = async (dbDef, key, dex)=>{
+    db_w?"":await init_db();
     const value = await db_w.get(dbDef.dbStore,key);
     return value;
-  }
+  };
 
 var delDB = (dbDef, key) => {
     return new Promise((resolve, reject) => {
@@ -50,3 +52,6 @@ var delDB = (dbDef, key) => {
     await db_w.put(dbDef.dbStore,{uid:key,value:newData});
   }
 
+  let init_db = async() =>{
+    db_w = await idb.openDB(dbDef.dbName);
+  };

@@ -160,12 +160,18 @@ async function filter_lines(tableau,occurrence,d1_arr) {
 
 function order(arr){
     const filtered_arr=[];
+    let col=arr.map(row=>parseInt(row[0]));
     while(arr.length>0){
-        let col=arr.map(row=>parseInt(row[0]));
         let max_val = Math.max(...col);
         const max_index = col.findIndex(row=>row===max_val);
+        
         filtered_arr.push(arr[max_index]);
-        arr.splice(max_index,1);
+        //élimine les doublons
+        while(Math.max(...col)===max_val){
+            const max_index = col.findIndex(row=>row===max_val);
+            arr.splice(max_index,1);
+            col.splice(max_index,1);
+        }
     }
     return filtered_arr;
 }

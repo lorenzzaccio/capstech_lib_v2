@@ -6,18 +6,20 @@
 
 const checkOnlineStatus = async () => {
     try {
-      const online = await fetch("/new_swipe/public_html/1Pixel.png");
+      const online = await fetch("1Pixel.png");
       return online.status >= 200 && online.status < 300; // either true or false
     } catch (err) {
+      $('#pacman').hide();
       return false; // definitely offline
     }
   };
 
   setInterval(async () => {
-    const result = await checkOnlineStatus();
+    const result = await checkOnlineStatus()|| false;
     const statusDisplay = document.getElementById("status");
     statusDisplay.textContent = result ? "Online" : "OFFline";
-    let result_db;
+    check_db_connection(true);
+    /*let result_db;
     try{
         result_db = await getconnectionStatusTask();
         result_db=true;
@@ -25,7 +27,7 @@ const checkOnlineStatus = async () => {
         result_db=false;
     }
     const statusDbDisplay = document.getElementById("statusDb");
-    statusDbDisplay.textContent = result_db ? "Online" : "OFFline";
+    statusDbDisplay.textContent = result_db ? "Online" : "OFFline";*/
 
   }, 30000); // probably too often, try 30000 for every 30 seconds
   
@@ -42,20 +44,24 @@ const checkOnlineStatus = async () => {
       : "OFFline";*/
   });
 
-  async function check_db_connection(){
+  async function check_db_connection(no_ui){
     try {
       token_connect=true;
+      await db_write('offline_status',0);
       const article = await service_get_last_article();
       await db_write('offline_status',0);
+      const statusDbDisplay = document.getElementById("statusDb");
+      statusDbDisplay ?  
+      statusDbDisplay.textContent =  "ONline"
+      :"";
       return true;
     } catch (err) {
-      alert("connection db problem"); 
+      $('#pacman').hide();
+      no_ui?"":alert("connection db problem"); 
       await db_write('offline_status',1);
       const statusDbDisplay = document.getElementById("statusDb");
       statusDbDisplay ?  
-      statusDbDisplay.textContent = (_offline)
-      ? "OFFline"
-      : "Online"
+      statusDbDisplay.textContent =  "OFFline"
       :"";
       return false; // definitely offline
     }

@@ -65,9 +65,9 @@ class detail_wnd{
                         let val = Object.entries(optionList).findIndex(row=>row[0]===arrow.get(colName)||row[1]===arrow.get(colName));
                         var combo = addRowComboVal(table_id, [list_lbl[k][COL_LBL], colName, decodeURIComponent(escape(list_lbl[k][COL_TABLE])), cond, /*arrow.get(colName)*/val, col_id],optionList);
                         if(val!=-1)
-                            $(combo).val(parseInt(Object.entries(optionList)[val][0]));
+                            $(combo).val(parseInt(Object.entries(optionList)[val][0]) || Object.entries(optionList)[val][0]);
                         else
-                            $(combo).val(parseInt(Object.entries(optionList)[0][0]));
+                            $(combo).val(parseInt(Object.entries(optionList)[0][0]) || Object.entries(optionList)[0][0] );
                         break;
                     case UI_TXT_AREA:
                         addRowTxtAreaVal(table_id,[list_lbl[k][COL_LBL],colName,list_lbl[k][COL_TABLE],cond,arrow.get(colName),col_id]);
@@ -83,42 +83,12 @@ class detail_wnd{
         }
 	}
 
- mysql_real_escape_string (str) {
-    if (typeof str != 'string')
-        return str;
-
-    return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
-        switch (char) {
-            case "\0":
-                return "\\0";
-            case "\x08":
-                return "\\b";
-            case "\x09":
-                return "\\t";
-            case "\x1a":
-                return "\\z";
-            case "\n":
-                return "\\n";
-            case "\r":
-                return "\\r";
-            case "\"":
-            case "'":
-            case "\\":
-            case "%":
-                return "\\"+char; // prepends a backslash to backslash, percent,
-                                  // and double/single quotes
-        }
-    });
-}
-
-
-
 //Update values to sql Db
 confirm_click_cb(e,com_id){
     $(e.target).parents('.modal').find('tr').css('display', 'none');
     $(e.target).parents('.modal').find('tr[data-status="modif"]').css('display', 'table-row');
     $(e.target).parents('.modal').find('tr[data-status="modif"]').fadeIn('slow');
-    console.log(this._parent._data);
+    console.log(this._parent.data);
     console.log(this._parent._columns);
     //for combo
     var arr = $(e.target).parents('.modal').find('tr[data-status="modif"]').find('option:selected').toArray();
@@ -132,7 +102,8 @@ confirm_click_cb(e,com_id){
             var vconsole="sql_update("+v1+","+v2+","+v3+","+v4+")";
             console.log(vconsole);
             this._confirm_cbk(v1,v2,v3,v4);
-
+            g_id=v4;
+            this._parent._parent.fetch_update_by_id(this._parent.data);
         }
     }
     
@@ -140,18 +111,25 @@ confirm_click_cb(e,com_id){
     var arr = $(e.target).parents('.modal').find('tr[data-status="modif"] > td > input').toArray();
     for(var l=0;l<arr.length;l++){
         if(($(arr[l]).attr("data-table")!==undefined)&&($(arr[l]).attr("data-name")!==undefined)&&($(arr[l]).attr("data-cond")!==undefined)){
-            var v1=$(arr[l]).attr("data-table");
-            var v2=$(arr[l]).attr("data-name");
-            console.log($(arr[l]).val().trim());
-            var v3=/*"'"+this.mysql_real_escape_string(*/encodeURIComponent($(arr[l]).val().trim());/*+"'"*/;// escape("\'"+$(arr[l]).val().trim()+"\'");
-			console.log(v3);
-            var v4=$(arr[l]).attr("data-cond");
-            var v5=parseInt($(arr[l]).attr("data-ref"));//column
-            var vconsole="sql_update("+v1+","+v2+","+v3+","+v4+")";
-            console.log(vconsole);
+            var v1=encodeURIComponent($(arr[l]).attr("data-table"));
+            var v2=encodeURIComponent($(arr[l]).attr("data-name"));
+            //console.log($(arr[l]).val().trim());
+            //var v3=encodeURIComponent($(arr[l]).val().trim());
+	        //console.log(v3);
+            let t =$(arr[l]).val().trim();
+            const regex=/\\'/g;
+            let t1=t.replace(regex, "'")
+            let t2=t1.replace(/'/g,"\\'");
+            var v3=encodeURIComponent(t2);
+            var v4=encodeURIComponent($(arr[l]).attr("data-cond"));
+            var v5=encodeURIComponent(parseInt($(arr[l]).attr("data-ref")));//column
+            //var vconsole="sql_update("+v1+","+v2+","+v3+","+v4+")";
+            //console.log(vconsole);
             //sql_update(v1,v2,v3,v4);
             this._confirm_cbk(v1,v2,v3,v4);
             $("#"+this._row_id+" td div."+v2).text($(arr[l]).val().trim());
+            g_id=v4;
+            this._parent._parent.fetch_update_by_id(this._parent.data);
         }
     }
 
@@ -169,6 +147,8 @@ confirm_click_cb(e,com_id){
             console.log(vconsole);
             this._confirm_cbk(v1,v2,v3,v4);
             $("#"+this._row_id+" td div."+v2).text($(arr[l]).val().trim());
+            g_id=v4;
+            this._parent._parent.fetch_update_by_id(this._parent.data);
         }
     }
 }

@@ -6,25 +6,25 @@
 
 class _list_of_nn_tp {
 
-	constructor(container, row_mapper,config,sub_row_class,columns,status,table_row_class,loc,parent) {
+	constructor(container, row_mapper,config,sub_row_class,columns,status,table_row_class,loc,parent,ui_map) {
 		this._parent=parent;
 		this.container = container;
-		this.row_mapper = row_mapper;
+		this.row_mapper =  new Lib_row(container);
 		this._config = config;
 		this.index = 0;
 		this._sub_row_class = sub_row_class;
 		this._columns = columns;
+		this._ui_map = ui_map;
 		this._status = status;
-		this.loc=loc;//[];
+		this.loc=loc;
 		if(table_row_class !== undefined)
 			this._table_row = table_row_class;
 		else
 			this._table_row = _table_row;
-			
 	};
 
 	loc_addRowWithId(row_id, arr) {
-		var new_row = new (this._table_row)(this.row_mapper,row_id,arr,this._config,this._sub_row_class,this._columns,this._status,this._parent);
+		var new_row = new (this._table_row)(this.row_mapper,row_id,arr,this._config,this._sub_row_class,this._columns,this._status,this._parent,this._ui_map);
 		let f= new_row.create.bind(new_row);
 		f(arr);
 		new_row.hide();
@@ -39,7 +39,7 @@ class _list_of_nn_tp {
 	}
 	
 	update(row_id,arr){
-		var existing_row = new (this._table_row)(this.row_mapper,row_id,Array.isArray(arr)?arr:arr.split(";"),this._config,this._sub_row_class,this._columns,this._status,this._parent);
+		var existing_row = new (this._table_row)(this.row_mapper,row_id,Array.isArray(arr)?arr:arr.split(";"),this._config,this._sub_row_class,this._columns,this._status,this._parent,this._ui_map);
 		existing_row.update();
 	}
 
